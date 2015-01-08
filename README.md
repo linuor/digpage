@@ -6,7 +6,10 @@
 使用方法
 ---------------
 
+使用代码时，请选择与视频相对应版本的源代码
+
 ```
 $ git clone https://github.com/linuor/digpage.git
 $ cd digpage.com
 $ php /path/to/composer.phar update
+```

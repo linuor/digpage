@@ -8,6 +8,7 @@
     "support": {
         "issues": "https://github.com/linuor/digpage/issues?state=open",
         "wiki": "https://github.com/linuor/digpage/wiki",
+        "wiki": "https://github.com/linuor/digpage/wiki",
         "source": "https://github.com/linuor/digpage"
     },
     "minimum-stability": "stable",
