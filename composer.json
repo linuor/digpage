@@ -1,16 +1,16 @@
 {
-    "name": "yiisoft/yii2-app-advanced",
-    "description": "Yii 2 Advanced Application Template",
-    "keywords": ["yii2", "framework", "advanced", "application template"],
-    "homepage": "http://www.yiiframework.com/",
+    "name": "linuor/digpage",
+    "description": "Sample project of a classic website power by Yii2.0",
+    "keywords": ["digpage", "yii2", "sample"],
+    "homepage": "http://www.digpage.com/",
     "type": "project",
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/yiisoft/yii2/issues?state=open",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
-        "source": "https://github.com/yiisoft/yii2"
+        "issues": "https://github.com/linuor/digpage/issues?state=open",
+        "forum": ""
+        "wiki": "https://github.com/linuor/digpage/wiki",
+        "irc": "",
+        "source": "https://github.com/linuor/digpage"
     },
     "minimum-stability": "stable",
     "require": {
