@@ -2,12 +2,9 @@
 
 return [
     'Id' => '标识',
-    'Title' => '标题',
-    'Parent' => '父章节',
-    'Next' => '下一章节',
-    'Prev' => '前一章节',
-    'Child Num' => '子章节数',
-    'Toc Mode' => '目录模式',
+    'Section' => '章节',
+    'Parent' => '父评论',
+    'Child Num' => '子评论数',
     'Status' => '状态',
     'Comment Mode' => '评论模式',
     'Comment Num' => '评论数',
