@@ -4,7 +4,6 @@ return [
     'Id' => '标识',
     'Section' => '章节',
     'Parent' => '父评论',
-    'Child Num' => '子评论数',
     'Status' => '状态',
     'Comment Mode' => '评论模式',
     'Comment Num' => '评论数',

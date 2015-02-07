@@ -104,23 +104,23 @@ class Section extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getNext0()
+    public function getNextSection()
     {
         return $this->hasOne(Section::className(), ['id' => 'next']);
     }
-
+    
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSections()
+    public function getChildSections()
     {
-        return $this->hasMany(Section::className(), ['prev' => 'id']);
+        return $this->hasMany(Section::className(), ['parent' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getParent0()
+    public function getParentSection()
     {
         return $this->hasOne(Section::className(), ['id' => 'parent']);
     }
@@ -128,7 +128,7 @@ class Section extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPrev0()
+    public function getPrevSection()
     {
         return $this->hasOne(Section::className(), ['id' => 'prev']);
     }

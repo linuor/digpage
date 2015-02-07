@@ -10,7 +10,6 @@ use Yii;
  * @property integer $id
  * @property integer $section_id
  * @property integer $parent
- * @property integer $child_num
  * @property integer $status
  * @property integer $thumbsup
  * @property integer $thumbsdown
@@ -42,7 +41,8 @@ class Comment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['section_id', 'parent', 'child_num', 'status', 'thumbsup', 'thumbsdown', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['section_id'], 'required'],
+            [['section_id', 'parent', 'status', 'thumbsup', 'thumbsdown', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['content'], 'string']
         ];
     }
@@ -56,7 +56,6 @@ class Comment extends \yii\db\ActiveRecord
             'id' => Yii::t('common/comment', 'ID'),
             'section_id' => Yii::t('common/comment', 'Section ID'),
             'parent' => Yii::t('common/comment', 'Parent'),
-            'child_num' => Yii::t('common/comment', 'Child Num'),
             'status' => Yii::t('common/comment', 'Status'),
             'thumbsup' => Yii::t('common/comment', 'Thumbsup'),
             'thumbsdown' => Yii::t('common/comment', 'Thumbsdown'),
@@ -87,7 +86,7 @@ class Comment extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getParent0()
+    public function getParentComment()
     {
         return $this->hasOne(Comment::className(), ['id' => 'parent']);
     }
@@ -95,7 +94,7 @@ class Comment extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getComments()
+    public function getChildComments()
     {
         return $this->hasMany(Comment::className(), ['parent' => 'id']);
     }

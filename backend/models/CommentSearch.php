@@ -1,6 +1,6 @@
 <?php
 
-namespace common\models;
+namespace backend\models;
 
 use Yii;
 use yii\base\Model;
@@ -18,7 +18,7 @@ class CommentSearch extends Comment
     public function rules()
     {
         return [
-            [['id', 'section', 'parent', 'child_num', 'status', 'comment_mode', 'comment_num', 'thumbsup', 'thumbsdown', 'ver', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['id', 'section_id', 'parent', 'status', 'thumbsup', 'thumbsdown', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['content'], 'safe'],
         ];
     }
@@ -57,15 +57,11 @@ class CommentSearch extends Comment
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'section' => $this->section,
+            'section_id' => $this->section_id,
             'parent' => $this->parent,
-            'child_num' => $this->child_num,
             'status' => $this->status,
-            'comment_mode' => $this->comment_mode,
-            'comment_num' => $this->comment_num,
             'thumbsup' => $this->thumbsup,
             'thumbsdown' => $this->thumbsdown,
-            'ver' => $this->ver,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,

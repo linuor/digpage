@@ -4,20 +4,20 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\SectionSearch */
+/* @var $searchModel frontend\models\CommentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('backend/section', 'Sections');
+$this->title = Yii::t('frontend/comment', 'Comments');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="section-index">
+<div class="comment-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a(Yii::t('backend/section', 'Create {modelClass}', [
-    'modelClass' => 'Section',
+        <?= Html::a(Yii::t('frontend/comment', 'Create {modelClass}', [
+    'modelClass' => 'Comment',
 ]), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
@@ -28,16 +28,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'title',
+            'section_id',
             'parent',
-            'next',
-            'prev',
-            // 'toc_mode',
-            // 'status',
-            // 'comment_mode',
-            // 'comment_num',
+            'status',
+            'thumbsup',
+            // 'thumbsdown',
             // 'content:ntext',
-            // 'ver',
             // 'created_at',
             // 'updated_at',
             // 'created_by',

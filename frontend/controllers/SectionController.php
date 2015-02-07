@@ -1,18 +1,18 @@
 <?php
 
-namespace backend\controllers;
+namespace frontend\controllers;
 
 use Yii;
-use common\models\Comment;
-use backend\models\CommentSearch;
+use common\models\Section;
+use frontend\models\SectionSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * CommentController implements the CRUD actions for Comment model.
+ * SectionController implements the CRUD actions for Section model.
  */
-class CommentController extends Controller
+class SectionController extends Controller
 {
     public function behaviors()
     {
@@ -27,12 +27,12 @@ class CommentController extends Controller
     }
 
     /**
-     * Lists all Comment models.
+     * Lists all Section models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new CommentSearch();
+        $searchModel = new SectionSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -42,7 +42,7 @@ class CommentController extends Controller
     }
 
     /**
-     * Displays a single Comment model.
+     * Displays a single Section model.
      * @param integer $id
      * @return mixed
      */
@@ -54,13 +54,13 @@ class CommentController extends Controller
     }
 
     /**
-     * Creates a new Comment model.
+     * Creates a new Section model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Comment();
+        $model = new Section();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -72,7 +72,7 @@ class CommentController extends Controller
     }
 
     /**
-     * Updates an existing Comment model.
+     * Updates an existing Section model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -91,7 +91,7 @@ class CommentController extends Controller
     }
 
     /**
-     * Deletes an existing Comment model.
+     * Deletes an existing Section model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -104,15 +104,15 @@ class CommentController extends Controller
     }
 
     /**
-     * Finds the Comment model based on its primary key value.
+     * Finds the Section model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Comment the loaded model
+     * @return Section the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Comment::findOne($id)) !== null) {
+        if (($model = Section::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

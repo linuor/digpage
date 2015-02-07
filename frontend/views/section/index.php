@@ -4,10 +4,10 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\SectionSearch */
+/* @var $searchModel frontend\models\SectionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('backend/section', 'Sections');
+$this->title = Yii::t('frontend/section', 'Sections');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="section-index">
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a(Yii::t('backend/section', 'Create {modelClass}', [
+        <?= Html::a(Yii::t('frontend/section', 'Create {modelClass}', [
     'modelClass' => 'Section',
 ]), ['create'], ['class' => 'btn btn-success']) ?>
     </p>

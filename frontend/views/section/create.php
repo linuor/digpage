@@ -6,10 +6,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\Section */
 
-$this->title = Yii::t('backend/section', 'Create {modelClass}', [
+$this->title = Yii::t('frontend/section', 'Create {modelClass}', [
     'modelClass' => 'Section',
 ]);
-$this->params['breadcrumbs'][] = ['label' => Yii::t('backend/section', 'Sections'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend/section', 'Sections'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="section-create">

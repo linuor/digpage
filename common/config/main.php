@@ -27,6 +27,24 @@ return [
                         'backend/comment' => 'comment.php',
                     ],
                 ],
+                'frontend*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@frontend/messages',
+                    'fileMap' =>[
+                        'frontend' => 'frontend.php',
+                        'frontend/section' => 'section.php',
+                        'frontend/comment' => 'comment.php',
+                    ],
+                ],
+                'api*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@api/messages',
+                    'fileMap' =>[
+                        'api' => 'api.php',
+                        'api/section' => 'section.php',
+                        'api/comment' => 'comment.php',
+                    ],
+                ],
                 '*' => [
                     'class' => 'yii\i18n\PhpMessageSource',
                     'basePath' => '@app/messages',

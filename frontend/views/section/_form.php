@@ -41,7 +41,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'updated_by')->textInput() ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('backend/section', 'Create') : Yii::t('backend/section', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? Yii::t('frontend/section', 'Create') : Yii::t('frontend/section', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

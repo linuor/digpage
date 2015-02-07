@@ -16,19 +16,18 @@ class m150131_052837_comment extends Migration
 
         $this->createTable(self::TBL_NAME, [
             'id' => Schema::TYPE_PK,
-            'section_id' => Schema::TYPE_INTEGER . ' NOT NULL DEFAULT 0',
-            'parent' => Schema::TYPE_INTEGER . ' NOT NULL DEFAULT 0',
-            'child_num' => Schema::TYPE_INTEGER . ' NOT NULL DEFAULT 0',
+            'section_id' => Schema::TYPE_INTEGER . ' NOT NULL',
+            'parent' => Schema::TYPE_INTEGER . ' DEFAULT NULL',
             'status' => Schema::TYPE_SMALLINT . ' NOT NULL DEFAULT 0',
             'thumbsup' => Schema::TYPE_INTEGER . ' NOT NULL DEFAULT 0',
             'thumbsdown' => Schema::TYPE_INTEGER . ' NOT NULL DEFAULT 0',
             'content' => Schema::TYPE_TEXT,
             'created_at' => Schema::TYPE_INTEGER . ' NOT NULL DEFAULT 0',
             'updated_at' => Schema::TYPE_INTEGER . ' NOT NULL DEFAULT 0',
-            'created_by' => Schema::TYPE_INTEGER . ' NOT NULL DEFAULT 0',
-            'updated_by' => Schema::TYPE_INTEGER . ' NOT NULL DEFAULT 0',
+            'created_by' => Schema::TYPE_INTEGER . ' DEFAULT NULL',
+            'updated_by' => Schema::TYPE_INTEGER . ' DEFAULT NULL',
         ], $tableOptions);
- 
+
         $this->addForeignKey('fk_comment_section', self::TBL_NAME,
                 '[[section_id]]', '{{%section}}', '[[id]]', 'RESTRICT', 'CASCADE');
         $this->addForeignKey('fk_comment_parent', self::TBL_NAME, '[[parent]]',

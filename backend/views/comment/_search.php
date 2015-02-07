@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\CommentSearch */
+/* @var $model backend\models\CommentSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -17,25 +17,17 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'section') ?>
+    <?= $form->field($model, 'section_id') ?>
 
     <?= $form->field($model, 'parent') ?>
 
-    <?= $form->field($model, 'child_num') ?>
-
     <?= $form->field($model, 'status') ?>
 
-    <?php // echo $form->field($model, 'comment_mode') ?>
-
-    <?php // echo $form->field($model, 'comment_num') ?>
-
-    <?php // echo $form->field($model, 'thumbsup') ?>
+    <?= $form->field($model, 'thumbsup') ?>
 
     <?php // echo $form->field($model, 'thumbsdown') ?>
 
     <?php // echo $form->field($model, 'content') ?>
-
-    <?php // echo $form->field($model, 'ver') ?>
 
     <?php // echo $form->field($model, 'created_at') ?>
 

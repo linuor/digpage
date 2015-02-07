@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\CommentSearch */
+/* @var $searchModel backend\models\CommentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('backend/comment', 'Comments');
@@ -28,16 +28,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'section',
+            'section_id',
             'parent',
-            'child_num',
             'status',
-            // 'comment_mode',
-            // 'comment_num',
-            // 'thumbsup',
+            'thumbsup',
             // 'thumbsdown',
             // 'content:ntext',
-            // 'ver',
             // 'created_at',
             // 'updated_at',
             // 'created_by',

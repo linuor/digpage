@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model common\models\Section */
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('backend/section', 'Sections'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('frontend/section', 'Sections'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="section-view">
@@ -15,11 +15,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('backend/section', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('backend/section', 'Delete'), ['delete', 'id' => $model->id], [
+        <?= Html::a(Yii::t('frontend/section', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a(Yii::t('frontend/section', 'Delete'), ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => Yii::t('backend/section', 'Are you sure you want to delete this item?'),
+                'confirm' => Yii::t('frontend/section', 'Are you sure you want to delete this item?'),
                 'method' => 'post',
             ],
         ]) ?>

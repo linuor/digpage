@@ -33,7 +33,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'updated_by')->textInput() ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('backend/comment', 'Create') : Yii::t('backend/comment', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? Yii::t('frontend/comment', 'Create') : Yii::t('frontend/comment', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -6,7 +6,6 @@ return [
     'Parent' => '父章节',
     'Next' => '下一章节',
     'Prev' => '前一章节',
-    'Child Num' => '子章节数',
     'Toc Mode' => '目录模式',
     'Status' => '状态',
     'Comment Mode' => '评论模式',

@@ -1,16 +1,16 @@
 <?php
 
-namespace common\models;
+namespace frontend\models;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Section;
+use common\models\Comment;
 
 /**
- * SectionSearch represents the model behind the search form about `common\models\Section`.
+ * CommentSearch represents the model behind the search form about `common\models\Comment`.
  */
-class SectionSearch extends Section
+class CommentSearch extends Comment
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class SectionSearch extends Section
     public function rules()
     {
         return [
-            [['id', 'parent', 'next', 'prev', 'child_num', 'toc_mode', 'status', 'comment_mode', 'comment_num', 'ver', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
-            [['title', 'content'], 'safe'],
+            [['id', 'section_id', 'parent', 'status', 'thumbsup', 'thumbsdown', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['content'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class SectionSearch extends Section
      */
     public function search($params)
     {
-        $query = Section::find();
+        $query = Comment::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,23 +57,18 @@ class SectionSearch extends Section
 
         $query->andFilterWhere([
             'id' => $this->id,
+            'section_id' => $this->section_id,
             'parent' => $this->parent,
-            'next' => $this->next,
-            'prev' => $this->prev,
-            'child_num' => $this->child_num,
-            'toc_mode' => $this->toc_mode,
             'status' => $this->status,
-            'comment_mode' => $this->comment_mode,
-            'comment_num' => $this->comment_num,
-            'ver' => $this->ver,
+            'thumbsup' => $this->thumbsup,
+            'thumbsdown' => $this->thumbsdown,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'content', $this->content]);
+        $query->andFilterWhere(['like', 'content', $this->content]);
 
         return $dataProvider;
     }
