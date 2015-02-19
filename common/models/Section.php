@@ -10,6 +10,7 @@ use Yii;
  * @property integer $id
  * @property string $title
  * @property integer $parent
+ * @property integer $ancestor
  * @property integer $next
  * @property integer $prev
  * @property integer $toc_mode
@@ -33,6 +34,21 @@ use Yii;
  */
 class Section extends \yii\db\ActiveRecord
 {
+    const STATUS_DRAFT = 0;
+    const STATUS_WAIT = 20;
+    const STATUS_REVIEW = 30;
+    const STATUS_DENY = 40;
+    const STATUS_PUBLISH = 50;
+    const STATUS_TIMING = 60;
+    const STATUS_ARCHIVE = 70;
+    const STATUS_UNPUBLISH = 80;
+    const STATUS_DELETE = 90;
+    const COMMENT_MODE_NORMAL = 0;
+    const COMMENT_MODE_FORBIDDE = 20;
+    const COMMENT_MODE_HIDE = 30;
+    const TOC_MODE_NORMAL = 0;
+    const TOC_MODE_HIDDEN = 20;
+
     /**
      * @inheritdoc
      */
@@ -47,7 +63,7 @@ class Section extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['parent', 'next', 'prev', 'toc_mode', 'status', 'comment_mode', 'comment_num', 'ver', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['parent', 'ancestor', 'next', 'prev', 'toc_mode', 'status', 'comment_mode', 'comment_num', 'ver', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['content'], 'string'],
             [['title'], 'string', 'max' => 255]
         ];
@@ -62,6 +78,7 @@ class Section extends \yii\db\ActiveRecord
             'id' => Yii::t('common/section', 'ID'),
             'title' => Yii::t('common/section', 'Title'),
             'parent' => Yii::t('common/section', 'Parent'),
+            'ancestor' => Yii::t('common/section', 'Ancestor'),
             'next' => Yii::t('common/section', 'Next'),
             'prev' => Yii::t('common/section', 'Prev'),
             'toc_mode' => Yii::t('common/section', 'Toc Mode'),
@@ -77,6 +94,10 @@ class Section extends \yii\db\ActiveRecord
         ];
     }
 
+    public function getDescendentSections()
+    {
+        return $this->hasMany(Sections::className(), ['ancestor' => 'id']);
+    }
     /**
      * @return \yii\db\ActiveQuery
      */

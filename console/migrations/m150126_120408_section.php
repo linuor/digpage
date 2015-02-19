@@ -22,6 +22,7 @@ class m150126_120408_section extends Migration
             'id' => Schema::TYPE_PK,
             'title' => Schema::TYPE_STRING . ' NOT NULL DEFAULT ""',
             'parent' => Schema::TYPE_INTEGER . ' DEFAULT NULL',
+            'ancestor' => Schema::TYPE_INTEGER . ' DEFAULT NULL',
             'next' => Schema::TYPE_INTEGER . ' DEFAULT NULL',
             'prev' => Schema::TYPE_INTEGER . ' DEFAULT NULL',
             'toc_mode' => Schema::TYPE_SMALLINT . ' NOT NULL DEFAULT 0',
@@ -37,6 +38,8 @@ class m150126_120408_section extends Migration
         ], $tableOptions);
 
         $this->addForeignKey('fk_section_parent', self::TBL_NAME, '[[parent]]',
+                self::TBL_NAME, '[[id]]', 'RESTRICT', 'CASCADE');
+        $this->addForeignKey('fk_section_ancestor', self::TBL_NAME, '[[ancestor]]',
                 self::TBL_NAME, '[[id]]', 'RESTRICT', 'CASCADE');
         $this->addForeignKey('fk_section_next', self::TBL_NAME, '[[next]]',
                 self::TBL_NAME, '[[id]]', 'RESTRICT', 'CASCADE');
