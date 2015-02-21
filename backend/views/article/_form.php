@@ -2,10 +2,13 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use backend\assets\ArticleFormAsset;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Section */
 /* @var $form yii\widgets\ActiveForm */
+
+ArticleFormAsset::register($this);
 ?>
 
 <div class="section-form">
