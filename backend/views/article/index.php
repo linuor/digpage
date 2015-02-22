@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\DataColumn',
                 'attribute' => 'created_by',
                 'value' => function ($model, $key, $index, $column) {
-                    if (is_null($model->getCreatedBy())) {
+                    if ($model->getCreatedBy() === null) {
                         return '';
                     }
                     return $model->getCreatedBy()->one()->username;
