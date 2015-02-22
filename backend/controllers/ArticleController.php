@@ -5,7 +5,7 @@ namespace backend\controllers;
 use Yii;
 use common\models\Article;
 use common\models\Section;
-use backend\models\SectionSearch;
+use backend\models\ArticleSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -33,7 +33,7 @@ class ArticleController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new SectionSearch();
+        $searchModel = new ArticleSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [

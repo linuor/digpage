@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use common\models\Section;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\SectionSearch */
@@ -25,26 +26,57 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'title',
-            'parent',
-            'next',
-            'prev',
-            // 'toc_mode',
-            // 'status',
-            // 'comment_mode',
-            // 'comment_num',
-            // 'content:ntext',
-            // 'ver',
-            // 'created_at',
-            // 'updated_at',
-            // 'created_by',
-            // 'updated_by',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\SerialColumn',
+            ],
+            [
+                'class' => 'yii\grid\DataColumn',
+                'attribute' => 'title',
+                'value' => function ($model, $key, $index, $column) {
+                    return Html::a($model->getTitleText(), ['article/view', 'id' => $key]);
+                },
+                'format' => 'raw',
+            ],
+            [
+                'class' => 'yii\grid\DataColumn',
+                'attribute' => 'status',
+                'value' => function ($model, $key, $index, $column) {
+                    return $model->getStatusText();
+                },
+                'filter' => Section::getAllStatus(),
+            ],
+            [
+                'class' => 'yii\grid\DataColumn',
+                'attribute' => 'toc_mode',
+                'value' => function ($model, $key, $index, $column) {
+                    return $model->getTocModeText();
+                },
+                'filter' => Section::getAllTocMode(),
+            ],
+            [
+                'class' => 'yii\grid\DataColumn',
+                'attribute' => 'comment_mode',
+                'value' => function ($model, $key, $index, $column) {
+                    return $model->getCommentModeText();
+                },
+                'filter' => Section::getAllCommentMode(),
+            ],
+            'updated_at:datetime',
+            [
+                'class' => 'yii\grid\DataColumn',
+                'attribute' => 'created_by',
+                'value' => function ($model, $key, $index, $column) {
+                    if (is_null($model->getCreatedBy())) {
+                        return '';
+                    }
+                    return $model->getCreatedBy()->one()->username;
+                },
+                'filter' => false,
+            ],        
+            [
+                'class' => 'yii\grid\ActionColumn',
+            ],
         ],
-    ]); ?>
+]); ?>
 
 </div>

@@ -176,4 +176,37 @@ class Section extends \yii\db\ActiveRecord
             self::TOC_MODE_HIDDEN => Yii::t('common/section', 'Hidden'),
         ];
     }
+    /**
+     * Get all available status in key-value pairs.
+     * @return array
+     */
+    public static function getAllStatus() {
+        return [
+            self::STATUS_DRAFT => Yii::t('common/section', 'Draft'),
+            self::STATUS_WAIT => Yii::t('common/section', 'Wait'),
+            self::STATUS_REVIEW => Yii::t('common/section', 'Review'),
+            self::STATUS_DENY => Yii::t('common/section', 'Deny'),
+            self::STATUS_PUBLISH => Yii::t('common/section', 'Publish'),
+            self::STATUS_TIMING => Yii::t('common/section', 'Timing'),
+            self::STATUS_ARCHIVE => Yii::t('common/section', 'Archive'),
+            self::STATUS_UNPUBLISH => Yii::t('common/section', 'Unpublish'),
+            self::STATUS_DELETE => Yii::t('common/section', 'Delete'),
+        ];
+    }
+    
+    public function getTitleText() {
+        return preg_replace('/<[^>]*>/', '', $this->title);
+    }
+    
+    public function getTocModeText() {
+        return static::getAllCommentMode()[$this->toc_mode];
+    }
+    
+    public function getCommentModeText() {
+        return static::getAllCommentMode()[$this->comment_mode];
+    }
+    
+    public function getStatusText() {
+        return static::getAllStatus()[$this->status];
+    }
 }
