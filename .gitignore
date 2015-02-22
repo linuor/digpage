@@ -33,3 +33,6 @@ phpunit.phar
 GPATH
 GRTAGS
 GTAGS
+
+# upload dirs
+backend/web/upload/
