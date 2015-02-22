@@ -66,6 +66,11 @@ class ArticleController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->create()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
+            Yii::$app->session->set('KCFINDER', [
+                'disabled' => false,
+                'uploadURL' => '/upload',
+                'uploadDir' => '../../../backend/web/upload',
+            ]);
             return $this->render('create', [
                 'model' => $model,
             ]);
