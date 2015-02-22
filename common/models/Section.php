@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\libs\PlainSection;
 use Yii;
 
 /**
@@ -208,5 +209,9 @@ class Section extends \yii\db\ActiveRecord
     
     public function getStatusText() {
         return static::getAllStatus()[$this->status];
+    }
+    
+    public function toPlainSection() {
+        return new PlainSection($this);
     }
 }
