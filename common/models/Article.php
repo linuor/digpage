@@ -50,8 +50,8 @@ class Article extends \yii\base\Model
             ]],
             [['comment_mode'], 'in', 'range' =>[
                 Section::COMMENT_MODE_NORMAL,
-                Section::COMMENT_MODE_FORBIDDE,
-                Section::COMMENT_MODE_HIDE,
+                Section::COMMENT_MODE_FORBIDDEN,
+                Section::COMMENT_MODE_HIDDEN,
             ]],
         ];
     }
