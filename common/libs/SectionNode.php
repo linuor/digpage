@@ -62,7 +62,7 @@ class SectionNode extends \yii\base\Object {
      * @return array SectionNode
      */
     public function getChild() {
-        if (is_null($this->_child))
+        if ($this->_child === null)
         {
             $this->_child = [];
             if ($this->_root->hasChildNodes()) {
@@ -81,7 +81,7 @@ class SectionNode extends \yii\base\Object {
      * @param SectionNode $section
      */
     public function appendChild($section) {
-        if (is_null($this->_child))
+        if ($this->_child === null)
             $this->_child = [];
         
         $count = count($this->_child);
@@ -102,12 +102,12 @@ class SectionNode extends \yii\base\Object {
      * @return \common\helper\SectionNode The parent section.
      */
     public function getParent() {
-        if (is_null($this->_parent)) {
+        if ($this->_parent === null) {
             $node = $this->_root->parentNode;
             while ($node && !self::isSectionNode($node)) {
                 $node = $node->parentNode;
             }
-            if (is_null($node)) {
+            if ($node === null) {
                 $this->_parent = false;
             } else {
                 $tmp = new SectionNode($node);
@@ -127,12 +127,12 @@ class SectionNode extends \yii\base\Object {
      * @return \common\helper\SectionNode
      */
     public function getNext() {
-        if (is_null($this->_next)) {
+        if ($this->_next === null) {
             $node = $this->_root->nextSibling;
             while ($node && !self::isSectionNode($node)) {
                 $node = $node->nextSibling;
             }
-            if (is_null($node)) {
+            if ($node === null) {
                 $this->_next = false;
             } else {
                 $this->_next = new SectionNode($node);
@@ -150,12 +150,12 @@ class SectionNode extends \yii\base\Object {
      * @return \common\helper\SectionNode
      */
     public function getPrev() {
-        if (is_null($this->_prev)) {
+        if ($this->_prev === null) {
             $node = $this->_root->previousSibling;
             while ($node && !self::isSectionNode($node)) {
                 $node = $node->previousSibling;
             }
-            if (is_null($node)) {
+            if ($node === null) {
                 $this->_prev = false;
             } else {
                 $this->_prev = new SectionNode($node);
@@ -173,7 +173,7 @@ class SectionNode extends \yii\base\Object {
      * @return string
      */
     public function getTitle() {
-        if (is_null($this->_title)) {
+        if ($this->_title === null) {
             if ($this->_root->hasChildNodes()) {
                 foreach ($this->_root->childNodes as $node) {
                     if ($node->nodeType == XML_ELEMENT_NODE && self::isTitle($node)) {
@@ -194,7 +194,7 @@ class SectionNode extends \yii\base\Object {
      * @return string
      */
     public function getContent() {
-        if (is_null($this->_content)) {
+        if ($this->_content === null) {
             $content = '';
             if ($this->_root->hasChildNodes()) {
                 foreach ($this->_root->childNodes as $node) {
