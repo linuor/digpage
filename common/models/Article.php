@@ -135,4 +135,20 @@ class Article extends \yii\base\Model
             }
         } while (!empty($stack));
     }
+    
+    /**
+     * Get all available comment mode in key-value pairs.
+     * @return array
+     */
+    public static function getAllCommentMode() {
+        return Section::getAllTocMode();
+    }
+
+    /**
+     * Get all available TOC mode in key-value pairs.
+     * @return array
+     */
+    public static function getAllTocMode() {
+        return Section::getAllCommentMode();
+    }
 }

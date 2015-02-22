@@ -160,9 +160,9 @@ class Section extends \yii\db\ActiveRecord
      */
     public static function getAllCommentMode() {
         return [
-            self::COMMENT_MODE_NORMAL => Yii::t('common/sectoin', 'Normal'),
-            self::COMMENT_MODE_FORBIDDEN => Yii::t('common/sectoin', 'Forbidden'),
-            self::COMMENT_MODE_HIDDEN => Yii::t('common/sectoin', 'Hidden'),
+            self::COMMENT_MODE_NORMAL => Yii::t('common/section', 'Normal'),
+            self::COMMENT_MODE_FORBIDDEN => Yii::t('common/section', 'Forbidden'),
+            self::COMMENT_MODE_HIDDEN => Yii::t('common/section', 'Hidden'),
         ];
     }
 
@@ -172,7 +172,7 @@ class Section extends \yii\db\ActiveRecord
      */
     public static function getAllTocMode() {
         return [
-            self::TOC_MODE_NORMALL => Yii::t('common/sectoin', 'Normal'),
+            self::TOC_MODE_NORMAL => Yii::t('common/section', 'Normal'),
             self::TOC_MODE_HIDDEN => Yii::t('common/section', 'Hidden'),
         ];
     }
