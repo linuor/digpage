@@ -45,6 +45,7 @@ return [
             'frontend/views',
             'frontend/controllers',
             'common/models',
+            'backend/web/upload',
         ],
         'setExecutable' => [
             'yii',
@@ -64,6 +65,7 @@ return [
             'backend/web/assets',
             'frontend/runtime',
             'frontend/web/assets',
+            'backend/web/upload',
         ],
         'setExecutable' => [
             'yii',
