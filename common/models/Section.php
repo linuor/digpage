@@ -44,8 +44,8 @@ class Section extends \yii\db\ActiveRecord
     const STATUS_UNPUBLISH = 80;
     const STATUS_DELETE = 90;
     const COMMENT_MODE_NORMAL = 0;
-    const COMMENT_MODE_FORBIDDE = 20;
-    const COMMENT_MODE_HIDE = 30;
+    const COMMENT_MODE_FORBIDDEN = 20;
+    const COMMENT_MODE_HIDDEN = 30;
     const TOC_MODE_NORMAL = 0;
     const TOC_MODE_HIDDEN = 20;
 
@@ -152,5 +152,28 @@ class Section extends \yii\db\ActiveRecord
     public function getPrevSection()
     {
         return $this->hasOne(Section::className(), ['id' => 'prev']);
+    }
+    
+    /**
+     * Get all available comment mode in key-value pairs.
+     * @return array
+     */
+    public static function getAllCommentMode() {
+        return [
+            self::COMMENT_MODE_NORMAL => Yii::t('common/sectoin', 'Normal'),
+            self::COMMENT_MODE_FORBIDDEN => Yii::t('common/sectoin', 'Forbidden'),
+            self::COMMENT_MODE_HIDDEN => Yii::t('common/sectoin', 'Hidden'),
+        ];
+    }
+
+    /**
+     * Get all available TOC mode in key-value pairs.
+     * @return array
+     */
+    public static function getAllTocMode() {
+        return [
+            self::TOC_MODE_NORMALL => Yii::t('common/sectoin', 'Normal'),
+            self::TOC_MODE_HIDDEN => Yii::t('common/section', 'Hidden'),
+        ];
     }
 }
