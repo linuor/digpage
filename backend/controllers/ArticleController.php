@@ -9,6 +9,7 @@ use backend\models\ArticleSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\data\Sort;
 
 /**
  * ArticleController implements the CRUD actions for Section model.
@@ -35,7 +36,9 @@ class ArticleController extends Controller
     {
         $searchModel = new ArticleSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $dataProvider->setSort(new Sort([
+            'defaultOrder' => ['updated_at' => SORT_DESC],
+        ]));
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -67,7 +70,7 @@ class ArticleController extends Controller
         $model = new Article();
 
         if ($model->load(Yii::$app->request->post()) && $model->create()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->getRootSectionId()]);
         } else {
             Yii::$app->session->set('KCFINDER', [
                 'disabled' => false,
