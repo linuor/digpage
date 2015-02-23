@@ -89,7 +89,7 @@ class Article extends \yii\base\Model
             $saveTransaction->rollBack();
             throw $e;
         }
-        return false;
+        return true;
     }
     
     protected function insert() {
