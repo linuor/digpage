@@ -119,9 +119,11 @@ class Article extends \yii\base\Model
                 array_push($stack, $sub);
             }
         } while (!empty($stack));
+        $lastId = $db->getLastInsertID();
+        $this->_rootSectionId = $lastId - $totalRows + 1;
         return [
             'totalRows' => $totalRows,
-            'lastId' => $db->getLastInsertID(),
+            'lastId' => $lastId,
         ];
     }
     
