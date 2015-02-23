@@ -15,8 +15,8 @@ class PlainSection extends Object{
     public $parent;
     public $next;
     public $prev;
+    public $firstChild;
     
-    private $_firstChild;
     private $_section;
     
     /**
@@ -25,7 +25,7 @@ class PlainSection extends Object{
      * @param boolean $withChild Search for first child (default) or not.
      * @param array $config
      */
-    public function __construct($section, $withChild = true, $config = []) {
+    public function __construct($section, $withChild = false, $config = []) {
         $this->_section = $section;
         $this->id = $section->id;
         $this->title = $section->title;
@@ -33,26 +33,10 @@ class PlainSection extends Object{
         $this->parent = $section->parent;
         $this->next = $section->next;
         $this->prev = $section->prev;
-        $this->_firstChild = false;
+        $this->firstChild = null;
         if ($withChild) {
             $this->getFirstChild();
         }
         parent::__construct($config);
-    }
-    
-    /**
-     * Getter for first child's id. Return false while failure.
-     * @return integer|boolean Id of current section's first child.
-     */
-    public function getFirstChild() {
-        if ($this->_firstChild === false) {
-            foreach ($this->_section->getChildSections()->all() as $child) {
-                if ($child->prev == null) {
-                    $this->_firstChild = $child->id;
-                    break;
-                }
-            }
-        }
-        return $this->_firstChild;
     }
 }

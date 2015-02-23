@@ -17,14 +17,25 @@ class Article extends \yii\base\Model
     public $toc_mode;
     public $status;
     public $comment_mode;
+    public $created_by;
+    public $updated_at;
+    
     private $_sectionNode;
+    private $_plainSections;
+    private $_rootSectionId;
+    private $_title;
     
     public function __construct($config = array()) {
         $this->content = '';
         $this->toc_mode = Section::TOC_MODE_NORMAL;
         $this->status = Section::STATUS_DRAFT;
         $this->comment_mode = Section::COMMENT_MODE_NORMAL;
+        $this->created_by = null;
+        $this->updated_at = 0;
         $this->_sectionNode = null;
+        $this->_plainSections = [];
+        $this->_rootSectionId = null;
+        $this->_title = '';
         parent::__construct($config);
     }
     
@@ -58,7 +69,7 @@ class Article extends \yii\base\Model
     
     public function create() {
         if (!$this->validate()) return false;
-        if (is_null($this->_sectionNode)) {
+        if ($this->_sectionNode === null) {
             $this->_sectionNode = new SectionNode();
             $this->_sectionNode->loadHtml($this->content);
         }
@@ -150,5 +161,78 @@ class Article extends \yii\base\Model
      */
     public static function getAllTocMode() {
         return Section::getAllCommentMode();
+    }
+    
+    /**
+     * Set sections models for current article.
+     * @param Section|array $sections array or instance of Section
+     * @return boolean Return true if success, while false on failure.
+     */
+    public function setSections($sections) {
+        if (is_array($sections)) {
+            foreach ($sections as $section) {
+                $plain = $section->toPlainSection();
+                foreach ($sections as $sec) {
+                    if ($sec->parent == $plain->id && $sec->prev === null) {
+                        $plain->firstChild = $sec->id;
+                        break;
+                    }
+                }
+                $this->_plainSections[$section->id] = $plain;
+                if ($this->_rootSectionId == null && $section->parent == null) {
+                    $this->_title = $section->getTitleText();
+                    $this->_rootSectionId = $section->id;
+                }
+                if ($this->created_by == null) {
+                    $this->created_by = $section->getCreatedBy()->one()->username;
+                }
+                if ($this->updated_at < $section->updated_at) {
+                    $this->updated_at = $section->updated_at;
+                }
+            }
+            return true;
+        } else if ($sections instanceof Section) {
+            $this->_rootSectionId = $sections->id;
+            $this->_plainSections[$sections->id] = $sections;
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Getter for all plain sections.
+     * @return array An array of PlainSection objects.
+     */
+    public function getSections() {
+        return $this->_plainSections;
+    }
+    
+    /**
+     * Getter for the id of the root section, also the key in the plain section array
+     * @return integer The id needed.
+     */
+    public function getRootSectionId() {
+        return $this->_rootSectionId;
+    }
+    
+    /**
+     * Get an Article model rooted with the given id.
+     * @param integer $id Root Section ID.
+     * @return Article. null while failure.
+     */
+    public static function findOne($id) {
+        $model = new self();
+        $sections = Section::findAll(['ancestor' => $id]);
+        if (empty($sections)) return null;
+        $model->setSections($sections);
+        return $model;
+    }
+    
+    /**
+     * Get the title in plain text, also the title of the root section.
+     * @return string
+     */
+    public function getTitle() {
+        return $this->_title;
     }
 }
