@@ -56,7 +56,6 @@ class ArticleController extends Controller
         return $this->render('view', [
             'model' => $model,
             'sections' => $model->getSections(),
-            'rootId' => $model->id,
         ]);
     }
 
@@ -93,13 +92,13 @@ class ArticleController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
+//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        } else {
+        return $this->render('update', [
+            'model' => $model,
+            'sections' => $model->getSections(),
+        ]);
     }
 
     /**
