@@ -1,22 +1,20 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Section */
+/* @var $model common\models\Article */
+/* @var $sections array */
+/* @var $rootId integer */
 
 $this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('backend/section', 'Sections'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="section-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
+<div class="article-view">
     <p>
-        <?= Html::a(Yii::t('backend/section', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('backend/section', 'Delete'), ['delete', 'id' => $model->id], [
+        <?= Html::a(Yii::t('backend/section', 'Update'), ['update', 'id' => $rootId], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a(Yii::t('backend/section', 'Delete'), ['delete', 'id' => $rootId], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => Yii::t('backend/section', 'Are you sure you want to delete this item?'),
@@ -24,26 +22,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
-
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'title',
-            'parent',
-            'next',
-            'prev',
-            'toc_mode',
-            'status',
-            'comment_mode',
-            'comment_num',
-            'content:ntext',
-            'ver',
-            'created_at',
-            'updated_at',
-            'created_by',
-            'updated_by',
-        ],
-    ]) ?>
-
+<?=
+$this->render('_view', [
+    'sections' => $sections,
+    'rootId' => $rootId,
+]);
+?>
 </div>
