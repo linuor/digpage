@@ -6,13 +6,17 @@ use common\libs\SectionNode;
 use Yii;
 use yii\db\Exception;
 /**
+ * @property integer $id
  * @property string $content
  * @property integer $toc_mode
  * @property integer $status
  * @property integer $comment_mode
+ * @property string $created_by
+ * @property integer $updated_at
  */
 class Article extends \yii\base\Model
 {
+    public $id;
     public $content;
     public $toc_mode;
     public $status;
@@ -22,7 +26,6 @@ class Article extends \yii\base\Model
     
     private $_sectionNode;
     private $_plainSections;
-    private $_rootSectionId;
     private $_title;
     
     public function __construct($config = array()) {
@@ -34,7 +37,7 @@ class Article extends \yii\base\Model
         $this->updated_at = 0;
         $this->_sectionNode = null;
         $this->_plainSections = [];
-        $this->_rootSectionId = null;
+        $this->id = null;
         $this->_title = '';
         parent::__construct($config);
     }
@@ -120,7 +123,7 @@ class Article extends \yii\base\Model
             }
         } while (!empty($stack));
         $lastId = $db->getLastInsertID();
-        $this->_rootSectionId = $lastId - $totalRows + 1;
+        $this->id = $lastId - $totalRows + 1;
         return [
             'totalRows' => $totalRows,
             'lastId' => $lastId,
@@ -181,9 +184,9 @@ class Article extends \yii\base\Model
                     }
                 }
                 $this->_plainSections[$section->id] = $plain;
-                if ($this->_rootSectionId == null && $section->parent == null) {
+                if ($this->id == null && $section->parent == null) {
                     $this->_title = $section->getTitleText();
-                    $this->_rootSectionId = $section->id;
+                    $this->id = $section->id;
                 }
                 if ($this->created_by == null) {
                     $this->created_by = $section->getCreatedBy()->one()->username;
@@ -194,7 +197,7 @@ class Article extends \yii\base\Model
             }
             return true;
         } else if ($sections instanceof Section) {
-            $this->_rootSectionId = $sections->id;
+            $this->id = $sections->id;
             $this->_plainSections[$sections->id] = $sections;
             return true;
         }
@@ -207,14 +210,6 @@ class Article extends \yii\base\Model
      */
     public function getSections() {
         return $this->_plainSections;
-    }
-    
-    /**
-     * Getter for the id of the root section, also the key in the plain section array
-     * @return integer The id needed.
-     */
-    public function getRootSectionId() {
-        return $this->_rootSectionId;
     }
     
     /**

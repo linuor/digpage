@@ -56,7 +56,7 @@ class ArticleController extends Controller
         return $this->render('view', [
             'model' => $model,
             'sections' => $model->getSections(),
-            'rootId' => $model->getRootSectionId(),
+            'rootId' => $model->id,
         ]);
     }
 
@@ -70,7 +70,7 @@ class ArticleController extends Controller
         $model = new Article();
 
         if ($model->load(Yii::$app->request->post()) && $model->create()) {
-            return $this->redirect(['view', 'id' => $model->getRootSectionId()]);
+            return $this->redirect(['view', 'id' => $model->id]);
         } else {
             Yii::$app->session->set('KCFINDER', [
                 'disabled' => false,
@@ -119,7 +119,7 @@ class ArticleController extends Controller
      * Finds the Section model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Section the loaded model
+     * @return Article the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
