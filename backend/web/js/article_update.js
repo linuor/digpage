@@ -1,14 +1,21 @@
 CKEDITOR.plugins.addExternal('dropdown', '/js/CKEditor_plugins/dropdown/');
+CKEDITOR.plugins.addExternal('delbutton', '/js/CKEditor_plugins/delbutton/');
 CKEDITOR.on('instanceCreated', function (event) {
     var editor = event.editor;
 
     editor.on('configLoaded', function () {
-        this.config.extraPlugins = 'sourcedialog,dropdown';
+        this.config.extraPlugins = 'sourcedialog,dropdown,delbutton';
         this.config.language = 'zh-cn';
         this.config.allowedContent = true;
+        this.config.toolbarGroups.push({
+            name: 'digpage'
+        });
         this.config.dropdowns = {
-            'onClick': onClick,
+            'onClick': onDropDownClick,
             'items' : window.digpage.update_dropdown_items
+        };
+        this.config.delbutton = {
+            'onClick' : onDelButtonClick
         };
     });
     
@@ -31,7 +38,7 @@ CKEDITOR.on('instanceCreated', function (event) {
             });
         }
     });
-    onClick = function (editor, index, value) {
+    var onDropDownClick = function (editor, index, value) {
         editor.element.$.dataset['section'+index] = value;
         id = editor.element.$.dataset['sectionid'];
         tmp = {};
@@ -41,5 +48,8 @@ CKEDITOR.on('instanceCreated', function (event) {
             type: 'PUT',
             data: tmp
         });
+    };
+    var onDelButtonClick = function(editor) {
+        console.log(editor);
     };
 });

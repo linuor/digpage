@@ -38,8 +38,8 @@ foreach ($allTags as $field => $fieldTags)
     ];
 }
 
-$js = 'window.digpage={};window.digpage.update_dropdown_items = ' . Json::encode($items) . ';';
-$this->registerJs($js, View::POS_BEGIN);
+$js = 'window.digpage=window.digpage||{};window.digpage.update_dropdown_items = ' . Json::encode($items) . ';';
+$this->registerJs($js, View::POS_END);
 
 ArticleUpdateAsset::register($this);
 

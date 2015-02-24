@@ -32,6 +32,7 @@
             label: dropdown.label,
             title: dropdown.title,
             multiSelect: false,
+            toolbar: 'digpage',
             panel: {
                 css: [
                     editor.config.contentsCss,
