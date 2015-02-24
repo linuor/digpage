@@ -235,6 +235,10 @@ class Article extends \yii\base\Model
     
     public function attributeLabels()
     {
+        if (empty($this->_plainSections)) {
+            $section = new Section();
+            return $section->attributeLabels();
+        }
         return reset($this->_plainSections)->attributeLabels();
     }
 }
