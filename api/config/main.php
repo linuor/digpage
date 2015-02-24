@@ -37,6 +37,11 @@ return [
                 ['class' => 'yii\rest\UrlRule', 'controller' => ['section','comment','user']],
             ],
         ],
+        'request' => [
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ]
+        ],
     ],
     'params' => $params,
 ];
