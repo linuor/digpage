@@ -13,5 +13,6 @@ class ArticleUpdateAsset extends AssetBundle
     ];
     public $depends = [
         'backend\assets\CkeditorAsset',
+        'yii\web\JqueryAsset',
     ];
 }

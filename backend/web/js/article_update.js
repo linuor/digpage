@@ -11,6 +11,28 @@ CKEDITOR.on('instanceCreated', function (event) {
             'items' : window.digpage.update_dropdown_items
         };
     });
+    
+    editor.on('blur', function(event){
+        editor = event.editor;
+        if (editor.checkDirty()) {
+            id = editor.element.$.dataset['sectionid'];
+            $data = $('<div>' + editor.getData() + '</div>');
+            $header = $data.children('h1,h2,h3,h4,h5,h6');
+            header = $header[0].outerHTML;
+            $header.remove();
+            content = $data.html();
+            $.ajax({
+                url: 'http://api.dev.com/sections/' + id,
+                type: 'PUT',
+                cache: false,
+                crossDomain: true,
+                data: {
+                    title: header,
+                    content: content
+                }
+            });
+        }
+    });
     onClick = function (editor, index, value) {
         editor.element.$.dataset['section'+index] = value;
         console.log(editor.element.$.dataset['section'+index]);
