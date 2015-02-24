@@ -20,12 +20,10 @@ CKEDITOR.on('instanceCreated', function (event) {
             $header = $data.children('h1,h2,h3,h4,h5,h6');
             header = $header[0].outerHTML;
             $header.remove();
-            content = $data.html();
+            content = $data.html().trim();
             $.ajax({
                 url: 'http://api.dev.com/sections/' + id,
                 type: 'PUT',
-                cache: false,
-                crossDomain: true,
                 data: {
                     title: header,
                     content: content
@@ -35,7 +33,13 @@ CKEDITOR.on('instanceCreated', function (event) {
     });
     onClick = function (editor, index, value) {
         editor.element.$.dataset['section'+index] = value;
-        console.log(editor.element.$.dataset['section'+index]);
-        console.log(value);
+        id = editor.element.$.dataset['sectionid'];
+        tmp = {};
+        tmp[index] = value;
+        $.ajax({
+            url: 'http://api.dev.com/sections/' + id,
+            type: 'PUT',
+            data: tmp
+        });
     };
 });
