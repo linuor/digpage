@@ -1,12 +1,48 @@
 <?php
 
 use backend\assets\ArticleUpdateAsset;
+use common\models\Section;
+use yii\web\View;
+use yii\helpers\Json;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Article */
 /* @var $sections array */
 
+$items = [];
+$allTags = [
+    'toc_mode' => Section::getAllTocMode(),
+    'status' => Section::getAllStatus(),
+    'comment_mode' => Section::getAllCommentMode(),
+];
+foreach ($allTags as $field => $fieldTags)
+{
+    $tmpTags =[];
+    foreach ($fieldTags as $k=>$s) {
+        $tmpTags[] = [
+            'value' => strval($k),
+            'label' => $s,
+        ];
+    }
+    $fieldTitle = $model->attributeLabels()[$field];
+    
+    $items[$field] = [
+        'label' => $fieldTitle,
+        'title' => $fieldTitle,
+        'groups' => [
+            [
+                'label' => $fieldTitle,
+                'tags' => $tmpTags,
+            ],
+        ],
+    ];
+}
+
+$js = 'window.digpage={};window.digpage.update_dropdown_items = ' . Json::encode($items) . ';';
+$this->registerJs($js, View::POS_BEGIN);
+
 ArticleUpdateAsset::register($this);
+
 $this->title = Yii::t('backend/section', 'Update {modelClass}: ', [
     'modelClass' => 'Section',
 ]) . ' ' . $model->title;

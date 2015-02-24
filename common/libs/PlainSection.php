@@ -39,4 +39,21 @@ class PlainSection extends Object{
         }
         parent::__construct($config);
     }
+    
+    public function getStatus() {
+        return $this->_section->status;
+    }
+    
+    public function getCommentMode() {
+        return $this->_section->comment_mode;
+    }
+    
+    public function getTocMode() {
+        return $this->_section->toc_mode;
+    }
+    
+    public function attributeLabels()
+    {
+        return $this->_section->attributeLabels();
+    }
 }

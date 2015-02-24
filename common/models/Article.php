@@ -232,4 +232,9 @@ class Article extends \yii\base\Model
     public function getTitle() {
         return $this->_title;
     }
+    
+    public function attributeLabels()
+    {
+        return reset($this->_plainSections)->attributeLabels();
+    }
 }
