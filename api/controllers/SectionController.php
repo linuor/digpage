@@ -14,6 +14,11 @@ class SectionController extends \yii\rest\ActiveController
     }
     
     public function actionDelete($id) {
-        return Section::findOne($id)->markDeleted();
+        $model = Section::findOne($id);
+        if ($this->checkAccess) {
+            call_user_func($this->checkAccess, $this->id, $model);
+        }
+        $model->markDeleted();
+        Yii::$app->getResponse()->setStatusCode(204);
     }
 }
