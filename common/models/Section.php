@@ -216,7 +216,7 @@ class Section extends \yii\db\ActiveRecord
     }
     
     public function markDeleted() {
-        self::updateAll(['status'=>self::STATUS_DELETE],
+        return self::updateAll(['status'=>self::STATUS_DELETE],
                 ['ancestor' => $this->id]);
     }
 }
