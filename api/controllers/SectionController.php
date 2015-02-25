@@ -14,7 +14,8 @@ class SectionController extends \yii\rest\ActiveController
     }
     
     public function actionDelete($id) {
-        $model = Section::findOne($id);
+        $model = Section::find()->with('nextSection')->with('prevSection')
+                ->where(['id'=>$id])->one();
         if ($this->checkAccess) {
             call_user_func($this->checkAccess, $this->id, $model);
         }
