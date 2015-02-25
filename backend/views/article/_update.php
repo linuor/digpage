@@ -8,6 +8,7 @@ $section = $sections[$rootId];
 <div class="section" id="<?= $rootId?>">
     <div contenteditable="true"
          data-sectionid="<?=$section->id?>"
+         data-sectionver="<?=$section->ver?>"
          data-sectionstatus="<?=$section->getStatus()?>"
          data-sectioncomment_mode="<?=$section->getCommentMode()?>"
          data-sectiontoc_mode="<?=$section->getTocMode()?>"

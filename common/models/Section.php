@@ -69,6 +69,13 @@ class Section extends \yii\db\ActiveRecord
             [['title'], 'string', 'max' => 255]
         ];
     }
+    
+    /**
+     * Make Section support optimistic lock, with the field of ver.
+     */
+    public function optimisticLock() {
+        return 'ver';
+    }
 
     /**
      * @inheritdoc

@@ -16,6 +16,7 @@ class PlainSection extends Object{
     public $next;
     public $prev;
     public $firstChild;
+    public $ver;
     
     private $_section;
     
@@ -33,6 +34,7 @@ class PlainSection extends Object{
         $this->parent = $section->parent;
         $this->next = $section->next;
         $this->prev = $section->prev;
+        $this->ver = $section->ver;
         $this->firstChild = null;
         if ($withChild) {
             $this->getFirstChild();

@@ -22,7 +22,9 @@ CKEDITOR.on('instanceCreated', function (event) {
     editor.on('blur', function(event){
         editor = event.editor;
         if (editor.checkDirty()) {
-            id = editor.element.$.dataset['sectionid'];
+            dataset = editor.element.$.dataset;
+            id = dataset['sectionid'];
+            ver = dataset['sectionver'];
             $data = $('<div>' + editor.getData() + '</div>');
             $header = $data.children('h1,h2,h3,h4,h5,h6');
             header = $header[0].outerHTML;
@@ -32,21 +34,32 @@ CKEDITOR.on('instanceCreated', function (event) {
                 url: 'http://api.dev.com/sections/' + id,
                 type: 'PUT',
                 data: {
+                    ver: ver,
                     title: header,
                     content: content
+                },
+                success :function (data, text, xhr){
+                    dataset['sectionver'] = parseInt(ver) + 1;
                 }
             });
         }
     });
     var onDropDownClick = function (editor, index, value) {
         editor.element.$.dataset['section'+index] = value;
-        id = editor.element.$.dataset['sectionid'];
-        tmp = {};
+        dataset = editor.element.$.dataset;
+        id = dataset['sectionid'];
+        ver = dataset['sectionver'];
+        tmp = {
+            ver: ver
+        };
         tmp[index] = value;
         $.ajax({
             url: 'http://api.dev.com/sections/' + id,
             type: 'PUT',
-            data: tmp
+            data: tmp,
+            success :function (data, text, xhr){
+                    dataset['sectionver'] = parseInt(ver) + 1;
+                }
         });
     };
     var onDelButtonClick = function(editor) {
