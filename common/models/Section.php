@@ -216,6 +216,14 @@ class Section extends \yii\db\ActiveRecord
     }
     
     public function markDeleted() {
+        $next = $this->getNextSection()->one();
+        if ($next !== null) {
+            $next->prev = $this->prev;
+        }
+        $prev = $this->getPrevSection()->one();
+        if ($prev !== null) {
+            $prev->next = $this->next;
+        }
         return self::updateAll(['status'=>self::STATUS_DELETE],
                 ['ancestor' => $this->id]);
     }
