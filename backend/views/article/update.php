@@ -12,7 +12,6 @@ use yii\helpers\Json;
 $items = [];
 $allTags = [
     'toc_mode' => Section::getAllTocMode(),
-    'status' => Section::getAllStatus(),
     'comment_mode' => Section::getAllCommentMode(),
 ];
 foreach ($allTags as $field => $fieldTags)
