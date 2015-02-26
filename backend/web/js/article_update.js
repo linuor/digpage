@@ -63,6 +63,18 @@ CKEDITOR.on('instanceCreated', function (event) {
         });
     };
     var onDelButtonClick = function(editor) {
-        console.log(editor);
+        dataset = editor.element.$.dataset;
+        id = dataset['sectionid'];
+        ver = dataset['sectionver'];
+        $.ajax({
+            url: 'http://api.dev.com/sections/' + id,
+            type: 'DELETE',
+            data: {
+                ver:ver
+            },
+            success :function (data, text, xhr){
+                    dataset['sectionver'] = parseInt(ver) + 1;
+                }
+        });
     };
 });

@@ -222,16 +222,43 @@ class Section extends \yii\db\ActiveRecord
         return new PlainSection($this);
     }
     
+    /**
+     * Mark Section on status DELETE.
+     * Related section will auto update, cause by the beforeSave() method
+     */
     public function markDeleted() {
-        $next = $this->getNextSection()->one();
-        if ($next !== null) {
-            $next->prev = $this->prev;
+        $this->status = self::STATUS_DELETE;
+        $this->save(false);
+    }
+    
+    public function beforeSave($insert) {
+        if (parent::beforeSave($insert)) {
+            $fields = $this->getDirtyAttributes();
+            if (!empty($fields) && !empty($fields['status'])
+                    &&$fields['status'] == self::STATUS_DELETE) {
+                $next = $this->getNextSection()->one();
+                if ($next !== null) {
+                    $next->prev = $this->prev;
+                    $next->save(false);
+                }
+                $prev = $this->getPrevSection()->one();
+                if ($prev !== null) {
+                    $prev->next = $this->next;
+                    $prev->save(false);
+                };
+            }
+            return true;
+        } else {
+            return false;
         }
-        $prev = $this->getPrevSection()->one();
-        if ($prev !== null) {
-            $prev->next = $this->next;
-        }
-        return self::updateAll(['status'=>self::STATUS_DELETE],
-                ['ancestor' => $this->id]);
+    }
+    
+    /**
+     * Make insert, update and delete operations transactional.
+     */
+    public function transactions() {
+        return [
+            self::OP_ALL,
+        ];
     }
 }

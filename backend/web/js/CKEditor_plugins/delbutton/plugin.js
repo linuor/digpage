@@ -10,7 +10,7 @@
             });
             editor.ui.addButton('Delete', {
                 label: 'Delete',
-                command: 'Delete',
+                command: 'delbutton',
                 toolbar: 'digpage'
             });
         }
