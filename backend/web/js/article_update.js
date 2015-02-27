@@ -63,6 +63,9 @@ CKEDITOR.on('instanceCreated', function (event) {
         });
     };
     var onDelButtonClick = function(editor) {
+        if (!confirm('确定要删除这一部分内容么？')) {
+            return;
+        }
         dataset = editor.element.$.dataset;
         id = dataset['sectionid'];
         ver = dataset['sectionver'];
@@ -74,6 +77,7 @@ CKEDITOR.on('instanceCreated', function (event) {
             },
             success :function (data, text, xhr){
                     dataset['sectionver'] = parseInt(ver) + 1;
+                    editor.element.$.remove();  
                 }
         });
     };
