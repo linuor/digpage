@@ -36,13 +36,13 @@ use Yii;
 class Section extends \yii\db\ActiveRecord
 {
     const STATUS_DRAFT = 0;
-    const STATUS_WAIT = 20;
+    const STATUS_PENDING = 20;
     const STATUS_REVIEW = 30;
     const STATUS_DENY = 40;
     const STATUS_PUBLISH = 50;
     const STATUS_TIMING = 60;
     const STATUS_ARCHIVE = 70;
-    const STATUS_UNPUBLISH = 80;
+    const STATUS_PRIVATE = 80;
     const STATUS_DELETE = 90;
     const COMMENT_MODE_NORMAL = 0;
     const COMMENT_MODE_FORBIDDEN = 20;
@@ -191,13 +191,13 @@ class Section extends \yii\db\ActiveRecord
     public static function getAllStatus() {
         return [
             self::STATUS_DRAFT => Yii::t('common/section', 'Draft'),
-            self::STATUS_WAIT => Yii::t('common/section', 'Wait'),
+            self::STATUS_PENDING => Yii::t('common/section', 'Pending'),
             self::STATUS_REVIEW => Yii::t('common/section', 'Review'),
             self::STATUS_DENY => Yii::t('common/section', 'Deny'),
             self::STATUS_PUBLISH => Yii::t('common/section', 'Publish'),
             self::STATUS_TIMING => Yii::t('common/section', 'Timing'),
             self::STATUS_ARCHIVE => Yii::t('common/section', 'Archive'),
-            self::STATUS_UNPUBLISH => Yii::t('common/section', 'Unpublish'),
+            self::STATUS_PRIVATE => Yii::t('common/section', 'Private'),
             self::STATUS_DELETE => Yii::t('common/section', 'Delete'),
         ];
     }

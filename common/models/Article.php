@@ -53,13 +53,13 @@ class Article extends \yii\base\Model
             ]],
             [['status'], 'in', 'range' => [
                 Section::STATUS_DRAFT,
-                Section::STATUS_WAIT,
+                Section::STATUS_PENDING,
                 Section::STATUS_REVIEW,
                 Section::STATUS_DENY,
                 Section::STATUS_PUBLISH,
                 Section::STATUS_TIMING,
                 Section::STATUS_ARCHIVE,
-                Section::STATUS_UNPUBLISH,
+                Section::STATUS_PRIVATE,
                 Section::STATUS_DELETE,
             ]],
             [['comment_mode'], 'in', 'range' =>[

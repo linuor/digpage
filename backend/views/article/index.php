@@ -41,24 +41,51 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\DataColumn',
                 'attribute' => 'status',
                 'value' => function ($model, $key, $index, $column) {
-                    return $model->getStatusText();
+                    return Html::dropDownList(
+                            'status' . $key,
+                            $model->status,
+                            $model->getAllStatus(),
+                            [
+                                'class' => 'stauts-dropdown',
+                                'data-sectionid' => $key
+                            ]
+                            );
                 },
+                'format' => 'raw',
                 'filter' => Section::getAllStatus(),
             ],
             [
                 'class' => 'yii\grid\DataColumn',
                 'attribute' => 'toc_mode',
                 'value' => function ($model, $key, $index, $column) {
-                    return $model->getTocModeText();
+                    return Html::dropDownList(
+                            'toc_mode' . $key,
+                            $model->toc_mode,
+                            $model->getAllTocMode(),
+                            [
+                                'class' => 'toc_mode-dropdown',
+                                'data-sectionid' => $key
+                            ]
+                            );
                 },
+                'format' => 'raw',
                 'filter' => Section::getAllTocMode(),
             ],
             [
                 'class' => 'yii\grid\DataColumn',
                 'attribute' => 'comment_mode',
                 'value' => function ($model, $key, $index, $column) {
-                    return $model->getCommentModeText();
+                    return Html::dropDownList(
+                            'comment_mode' . $key,
+                            $model->comment_mode,
+                            $model->getAllCommentMode(),
+                            [
+                                'class' => 'comment_mode-dropdown',
+                                'data-sectionid' => $key
+                            ]
+                            );
                 },
+                'format' => 'raw',
                 'filter' => Section::getAllCommentMode(),
             ],
             'updated_at:datetime',
@@ -75,6 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],        
             [
                 'class' => 'yii\grid\ActionColumn',
+                'header' => Yii::t('backend/section', 'Operation'),
             ],
         ],
 ]); ?>
