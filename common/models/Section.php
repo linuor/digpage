@@ -184,6 +184,7 @@ class Section extends \yii\db\ActiveRecord
             self::TOC_MODE_HIDDEN => Yii::t('common/section', 'Hidden'),
         ];
     }
+    
     /**
      * Get all available status in key-value pairs.
      * @return array
@@ -191,13 +192,7 @@ class Section extends \yii\db\ActiveRecord
     public static function getAllStatus() {
         return [
             self::STATUS_DRAFT => Yii::t('common/section', 'Draft'),
-            self::STATUS_PENDING => Yii::t('common/section', 'Pending'),
-            self::STATUS_REVIEW => Yii::t('common/section', 'Review'),
-            self::STATUS_DENY => Yii::t('common/section', 'Deny'),
             self::STATUS_PUBLISH => Yii::t('common/section', 'Publish'),
-            self::STATUS_TIMING => Yii::t('common/section', 'Timing'),
-            self::STATUS_ARCHIVE => Yii::t('common/section', 'Archive'),
-            self::STATUS_PRIVATE => Yii::t('common/section', 'Private'),
             self::STATUS_DELETE => Yii::t('common/section', 'Delete'),
         ];
     }
