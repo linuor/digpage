@@ -114,6 +114,7 @@ ArticleIndexAsset::register($this);
                     'delete' => function($url, $model, $key){
                         return Html::a('<span class="glyphicon glyphicon-trash"></span>',
                                 'javascript:void(0);', [
+                                    'title' => Yii::t('backend/section', 'Delete'),
                                     'class' => 'lnk-del-section'
                                 ]);
                     },
