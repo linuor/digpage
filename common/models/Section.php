@@ -228,9 +228,8 @@ class Section extends \yii\db\ActiveRecord
     
     public function beforeSave($insert) {
         if (parent::beforeSave($insert)) {
-            $fields = $this->getDirtyAttributes();
-            if (!empty($fields) && !empty($fields['status'])
-                    &&$fields['status'] == self::STATUS_DELETE) {
+            $status = $this->getDirtyAttributes('status');
+            if (!empty($status) && $status == self::STATUS_DELETE) {
                 $next = $this->getNextSection()->one();
                 if ($next !== null) {
                     $next->prev = $this->prev;

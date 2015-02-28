@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use common\models\Section;
+use backend\assets\ArticleIndexAsset;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\SectionSearch */
@@ -10,6 +11,7 @@ use common\models\Section;
 
 $this->title = Yii::t('backend/section', 'Sections');
 $this->params['breadcrumbs'][] = $this->title;
+ArticleIndexAsset::register($this);
 ?>
 <div class="section-index">
 
@@ -25,6 +27,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'rowOptions' => function($model, $key, $index, $grid){
+            return [
+                'data-sectionver' => $model->ver,
+            ];
+        },
         'columns' => [
             [
                 'class' => 'yii\grid\SerialColumn',
@@ -47,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             $model->getAllStatus(),
                             [
                                 'class' => 'stauts-dropdown',
-                                'data-sectionid' => $key
+                                'data-sectionfield' => 'status',
                             ]
                             );
                 },
@@ -64,7 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             $model->getAllTocMode(),
                             [
                                 'class' => 'toc_mode-dropdown',
-                                'data-sectionid' => $key
+                                'data-sectionfield' => 'toc_mode',
                             ]
                             );
                 },
@@ -81,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             $model->getAllCommentMode(),
                             [
                                 'class' => 'comment_mode-dropdown',
-                                'data-sectionid' => $key
+                                'data-sectionfield' => 'comment_mode',
                             ]
                             );
                 },
