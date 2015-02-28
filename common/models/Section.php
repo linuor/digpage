@@ -228,7 +228,7 @@ class Section extends \yii\db\ActiveRecord
     
     public function beforeSave($insert) {
         if (parent::beforeSave($insert)) {
-            $status = $this->getDirtyAttributes('status');
+            $status = $this->getDirtyAttributes(['status']);
             if (!empty($status) && $status == self::STATUS_DELETE) {
                 //use raw SQL instead of AR, to prevent the optimisticLock()
                 Yii::$app->db->createCommand()->update(self::tableName(),

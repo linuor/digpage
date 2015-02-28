@@ -1,7 +1,7 @@
 (function(){
     var onSelectChange = function(e) {
         $obj = $(e.target);
-        $parent = $obj.parents('tr');
+        $parent = $obj.closest('tr');
         id = $parent.data('key');
         ver = $parent.data('sectionver');
         value = $obj.val();
@@ -11,14 +11,36 @@
         data['ver'] = ver;
         $.ajax({
             url: 'http://api.dev.com/sections/' + id,
-            type: 'put',
+            type: 'PUT',
             data: data,
             success: function(data, text, xhr){
                 $parent.data('sectionver', parseInt(ver) + 1);
             }
         });
     };
+    
+    var onDelSection = function(e) {
+        if (!confirm('确定要删除么？')) {
+            return;
+        }
+        $obj = $(e.target);
+        $parent = $obj.closest('tr');
+        id = $parent.data('key');
+        ver = $parent.data('sectionver');
+        $.ajax({
+            url: 'http://api.dev.com/sections/' + id,
+            type: 'DELETE',
+            data: {
+                ver: ver
+            },
+            success: function(data, text, xhr){
+                $parent.data('sectionver', parseInt(ver) + 1);
+                $parent.find('.stauts-dropdown').val(90);
+            }
+        });
+    };
     $(document).on('change', '.stauts-dropdown', onSelectChange);
     $(document).on('change', '.toc_mode-dropdown', onSelectChange);
     $(document).on('change', '.comment_mode-dropdown', onSelectChange);
+    $(document).on('click', '.lnk-del-section', onDelSection);
 })();

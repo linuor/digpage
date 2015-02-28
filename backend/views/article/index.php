@@ -110,6 +110,14 @@ ArticleIndexAsset::register($this);
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => Yii::t('backend/section', 'Operation'),
+                'buttons' => [
+                    'delete' => function($url, $model, $key){
+                        return Html::a('<span class="glyphicon glyphicon-trash"></span>',
+                                'javascript:void(0);', [
+                                    'class' => 'lnk-del-section'
+                                ]);
+                    },
+                ],
             ],
         ],
 ]); ?>
