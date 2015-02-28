@@ -18,7 +18,8 @@
         "yiisoft/yii2-bootstrap": "*",
         "yiisoft/yii2-swiftmailer": "*",
         "ckeditor/ckeditor": "dev-master",
-        "sunhater/kcfinder": "dev-master"
+        "sunhater/kcfinder": "dev-master",
+        "yiisoft/yii2-jui": "~2.0.0"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",
