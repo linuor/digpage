@@ -230,16 +230,15 @@ class Section extends \yii\db\ActiveRecord
         if (parent::beforeSave($insert)) {
             $status = $this->getDirtyAttributes('status');
             if (!empty($status) && $status == self::STATUS_DELETE) {
-                $next = $this->getNextSection()->one();
-                if ($next !== null) {
-                    $next->prev = $this->prev;
-                    $next->save(false);
-                }
-                $prev = $this->getPrevSection()->one();
-                if ($prev !== null) {
-                    $prev->next = $this->next;
-                    $prev->save(false);
-                };
+                //use raw SQL instead of AR, to prevent the optimisticLock()
+                Yii::$app->db->createCommand()->update(self::tableName(),
+                        ['next' => $this->next],
+                        ['id' => $this->prev]
+                    )->execute();
+                Yii::$app->db->createCommand()->update(self::tableName(),
+                        ['prev' => $this->prev],
+                        ['id' => $this->next]
+                    )->execute();
             }
             return true;
         } else {
