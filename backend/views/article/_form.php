@@ -19,12 +19,10 @@ ArticleFormAsset::register($this);
 
     <?= $form->field($model, 'toc_mode')->dropDownList($model->getAllTocMode()) ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
-
     <?= $form->field($model, 'comment_mode')->dropDownList($model->getAllCommentMode()) ?>
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('backend/section', 'Create'), ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('backend/section', 'Publish'), ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

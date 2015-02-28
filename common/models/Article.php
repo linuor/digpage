@@ -70,8 +70,14 @@ class Article extends \yii\base\Model
         ];
     }
     
-    public function create() {
-        if (!$this->validate()) return false;
+    public function scenarios() {
+        return [
+            'create' => ['content', 'toc_mode', 'comment_mode'],
+        ];
+    }
+    
+    public function create($validate=true) {
+        if ($validate && !$this->validate()) return false;
         if ($this->_sectionNode === null) {
             $this->_sectionNode = new SectionNode();
             $this->_sectionNode->loadHtml($this->content);

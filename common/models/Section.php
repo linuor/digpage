@@ -101,7 +101,7 @@ class Section extends \yii\db\ActiveRecord
             'updated_by' => Yii::t('common/section', 'Updated By'),
         ];
     }
-
+    
     public function getDescendentSections()
     {
         return $this->hasMany(Sections::className(), ['ancestor' => 'id']);

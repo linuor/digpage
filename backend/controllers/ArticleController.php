@@ -67,8 +67,10 @@ class ArticleController extends Controller
     public function actionCreate()
     {
         $model = new Article();
-
-        if ($model->load(Yii::$app->request->post()) && $model->create()) {
+        $model->scenario = 'create';
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->status = Section::STATUS_PUBLISH;
+            $model->create();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             Yii::$app->session->set('KCFINDER', [
