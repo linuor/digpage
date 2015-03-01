@@ -6,8 +6,8 @@
 /* @var $level integer */
 /* @var $section common\libs\SectionRel */
 $section = $sections[$rootId];
-$tag = 'h' . $level>6?6:$level;
-$title = "<h$tag>" . $section->title . "</h$tag>";
+$tag = 'h' . ($level>6?6:$level);
+$title = "<$tag>" . $section->title . "</$tag>";
 ?>
 <div class="section" id="<?= $rootId ?>">
     <?= $title ?>
