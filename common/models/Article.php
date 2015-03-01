@@ -4,6 +4,7 @@ namespace common\models;
 use common\models\Section;
 use common\libs\SectionNode;
 use common\models\SectionRel;
+use yii\db\Query;
 use Yii;
 use yii\db\Exception;
 
@@ -136,16 +137,27 @@ class Article extends \yii\base\Model
         $beginId = $param['lastId'] - $param['totalRows'] + 1;
         $stack = [];
         array_push($stack, $this->_sectionNode);
+        $lastRow = (new Query())
+                ->select(['id'])
+                ->from($tblName)
+                ->where(['parent' => null, 'next' => null])
+                ->scalar();
+        $db->createCommand()
+                ->update($tblName, ['prev' => $lastRow], ['id' => $beginId])
+                ->execute();
+        $db->createCommand()
+                ->update($tblName, ['next' => $beginId], ['id' => $lastRow])
+                ->execute();
         
         do {
             $node = array_pop($stack);
-            $cmd = $db->createCommand()->update($tblName, [
+            $db->createCommand()->update($tblName, [
                 'parent' => ($node->id == 1 ? null : $node->getParent()->id + $beginId - 1),
                 'ancestor' => $beginId,
                 'prev' => ($node->getPrev()==false ? null : $node->getPrev()->id + $beginId - 1),
                 'next' => ($node->getNext()==false ? null : $node->getNext()->id + $beginId - 1),
-                    ], 'id=:id', [':id' => $node->id + $beginId - 1]);
-            $cmd->execute();
+                    ], 'id=:id', [':id' => $node->id + $beginId - 1])
+                ->execute();
             foreach ($node->getChild() as $sub) {
                 array_push($stack, $sub);
             }
