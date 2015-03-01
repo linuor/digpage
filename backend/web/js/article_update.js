@@ -26,8 +26,8 @@ CKEDITOR.on('instanceCreated', function (event) {
             id = dataset['sectionid'];
             ver = dataset['sectionver'];
             $data = $('<div>' + editor.getData() + '</div>');
-            $header = $data.children('h1,h2,h3,h4,h5,h6');
-            header = $header[0].outerHTML;
+            $header = $data.find('h1,h2,h3,h4,h5,h6');
+            header = $header.text();
             $header.remove();
             content = $data.html().trim();
             $.ajax({

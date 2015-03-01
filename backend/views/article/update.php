@@ -54,6 +54,7 @@ $this->params['breadcrumbs'][] = Yii::t('backend/section', 'Update');
 $this->render('_update', [
     'sections' => $sections,
     'rootId' => $model->id,
+    'level' => 1,
 ]);
 ?>
 </div>

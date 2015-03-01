@@ -2,10 +2,13 @@
 /* @var $this yii\web\View */
 /* @var $sections array */
 /* @var $rootId integer */
+/* @var $level integer */
 /* @var $section common\libs\SectionRel */
 $section = $sections[$rootId];
+$tag = 'h' . $level>6?6:$level;
+$title = "<h$tag>" . $section->title . "</h$tag>";
 ?>
-<div class="section" id="<?= $rootId?>">
+<div class="section" id="section<?= $rootId?>">
     <div contenteditable="true"
          data-sectionid="<?=$section->id?>"
          data-sectionver="<?=$section->ver?>"
@@ -13,7 +16,7 @@ $section = $sections[$rootId];
          data-sectioncomment_mode="<?=$section->comment_mode?>"
          data-sectiontoc_mode="<?=$section->toc_mode?>"
          >
-        <?= $section->title ?>
+        <?= $title ?>
         <?= $section->content ?>
     </div>
     <?php
@@ -22,6 +25,7 @@ $section = $sections[$rootId];
         echo $this->render('_update', [
             'sections' => $sections,
             'rootId' => $cur,
+            'level' => $level + 1,
         ]);
         $cur = $sections[$cur]->next;
     }
