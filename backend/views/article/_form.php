@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use common\models\Section;
 use yii\widgets\ActiveForm;
 use backend\assets\ArticleFormAsset;
 
@@ -17,9 +18,9 @@ ArticleFormAsset::register($this);
     
     <?= $form->field($model, 'content')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'toc_mode')->dropDownList($model->getAllTocMode()) ?>
+    <?= $form->field($model, 'toc_mode')->dropDownList(Section::getAllTocMode()) ?>
 
-    <?= $form->field($model, 'comment_mode')->dropDownList($model->getAllCommentMode()) ?>
+    <?= $form->field($model, 'comment_mode')->dropDownList(Section::getAllCommentMode()) ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('backend/section', 'Publish'), ['class' => 'btn btn-success']) ?>

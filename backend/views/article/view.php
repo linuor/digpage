@@ -15,6 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a(Yii::t('backend/section', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a(Yii::t('backend/section', 'Delete'), ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
+            //TODO modify delete
             'data' => [
                 'confirm' => Yii::t('backend/section', 'Are you sure you want to delete this item?'),
                 'method' => 'post',
@@ -25,6 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $this->render('_view', [
     'sections' => $sections,
     'rootId' => $model->id,
+    'level' => 1,
 ]);
 ?>
 </div>

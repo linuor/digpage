@@ -16,7 +16,6 @@ ArticleIndexAsset::register($this);
 <div class="section-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
         <?= Html::a(Yii::t('backend/section', 'Create {modelClass}', [
@@ -29,7 +28,7 @@ ArticleIndexAsset::register($this);
         'filterModel' => $searchModel,
         'rowOptions' => function($model, $key, $index, $grid){
             return [
-                'data-sectionver' => $model->ver,
+                'data' => ['sectionver' => $model->ver,],
             ];
         },
         'columns' => [
@@ -40,7 +39,7 @@ ArticleIndexAsset::register($this);
                 'class' => 'yii\grid\DataColumn',
                 'attribute' => 'title',
                 'value' => function ($model, $key, $index, $column) {
-                    return Html::a($model->getTitleText(), ['article/view', 'id' => $key]);
+                    return Html::a($model->title, ['article/view', 'id' => $key]);
                 },
                 'format' => 'raw',
             ],
@@ -54,7 +53,9 @@ ArticleIndexAsset::register($this);
                             $model->getAllStatus(),
                             [
                                 'class' => 'stauts-dropdown',
-                                'data-sectionfield' => 'status',
+                                'data' => [
+                                    'sectionfield' => 'status',
+                                ],
                             ]
                             );
                 },
@@ -71,7 +72,9 @@ ArticleIndexAsset::register($this);
                             $model->getAllTocMode(),
                             [
                                 'class' => 'toc_mode-dropdown',
-                                'data-sectionfield' => 'toc_mode',
+                                'data' => [
+                                    'sectionfield' => 'toc_mode',
+                                ],
                             ]
                             );
                 },
@@ -88,7 +91,9 @@ ArticleIndexAsset::register($this);
                             $model->getAllCommentMode(),
                             [
                                 'class' => 'comment_mode-dropdown',
-                                'data-sectionfield' => 'comment_mode',
+                                'data' => [
+                                    'sectionfield' => 'comment_mode',
+                                ],
                             ]
                             );
                 },

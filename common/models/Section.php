@@ -1,8 +1,6 @@
 <?php
 
 namespace common\models;
-
-use common\libs\PlainSection;
 use Yii;
 
 /**
@@ -25,13 +23,14 @@ use Yii;
  * @property integer $created_by
  * @property integer $updated_by
  *
- * @property Comment[] $comments
- * @property User $updatedBy
- * @property User $createdBy
- * @property Section $next0
- * @property Section[] $sections
- * @property Section $parent0
- * @property Section $prev0
+ * @property-read Comment[] $comments Comments related to the section.
+ * @property-read Section[] $descendentSections Sections belongs to the same ancestor.
+ * @property-read User $updatedBy User updated the section at last.
+ * @property-read User $createdBy Author of the section.
+ * @property-read Section $nextSection The next section at the same level.
+ * @property-read Section[] $childSections All child sections.
+ * @property-read Section $parentSection The parent section.
+ * @property-read Section $prevSection The prev section at the same level.
  */
 class Section extends \yii\db\ActiveRecord
 {
@@ -64,7 +63,21 @@ class Section extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['parent', 'ancestor', 'next', 'prev', 'toc_mode', 'status', 'comment_mode', 'comment_num', 'ver', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
+            [['toc_mode', 'status', 'comment_mode', 'ver', ], 'integer'],
+            [['toc_mode'], 'in', 'range' => [
+                Section::TOC_MODE_NORMAL,
+                Section::TOC_MODE_HIDDEN,
+            ]],
+            [['status'], 'in', 'range' => [
+                Section::STATUS_DRAFT,
+                Section::STATUS_PUBLISH,
+                Section::STATUS_DELETE,
+            ]],
+            [['comment_mode'], 'in', 'range' =>[
+                Section::COMMENT_MODE_NORMAL,
+                Section::COMMENT_MODE_FORBIDDEN,
+                Section::COMMENT_MODE_HIDDEN,
+            ]],
             [['content'], 'string'],
             [['title'], 'string', 'max' => 255]
         ];
@@ -102,12 +115,18 @@ class Section extends \yii\db\ActiveRecord
         ];
     }
     
+    /**
+     * Get all sections belongs to the same ancestor.
+     * @return Section[]
+     */
     public function getDescendentSections()
     {
         return $this->hasMany(Sections::className(), ['ancestor' => 'id']);
     }
+    
     /**
-     * @return \yii\db\ActiveQuery
+     * Get all comments related to the section
+     * @return Comment[]
      */
     public function getComments()
     {
@@ -115,7 +134,8 @@ class Section extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * Get the user who updated the section at last.
+     * @return User
      */
     public function getUpdatedBy()
     {
@@ -123,7 +143,8 @@ class Section extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * Get the author.
+     * @return User
      */
     public function getCreatedBy()
     {
@@ -131,7 +152,8 @@ class Section extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * Get the next section at the same level.
+     * @return Section
      */
     public function getNextSection()
     {
@@ -139,7 +161,8 @@ class Section extends \yii\db\ActiveRecord
     }
     
     /**
-     * @return \yii\db\ActiveQuery
+     * Get all child sections.
+     * @return Section[]
      */
     public function getChildSections()
     {
@@ -147,7 +170,8 @@ class Section extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * Get the parent section.
+     * @return Section
      */
     public function getParentSection()
     {
@@ -155,7 +179,8 @@ class Section extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * Get the prev section at the same level.
+     * @return Section
      */
     public function getPrevSection()
     {
@@ -197,10 +222,6 @@ class Section extends \yii\db\ActiveRecord
         ];
     }
     
-    public function getTitleText() {
-        return preg_replace('/<[^>]*>/', '', $this->title);
-    }
-    
     public function getTocModeText() {
         return static::getAllCommentMode()[$this->toc_mode];
     }
@@ -213,10 +234,6 @@ class Section extends \yii\db\ActiveRecord
         return static::getAllStatus()[$this->status];
     }
     
-    public function toPlainSection() {
-        return new PlainSection($this);
-    }
-    
     /**
      * Mark Section on status DELETE.
      * Related section will auto update, cause by the beforeSave() method
@@ -226,6 +243,9 @@ class Section extends \yii\db\ActiveRecord
         $this->save(false);
     }
     
+    /**
+     * @inheritDoc
+     */
     public function beforeSave($insert) {
         if (parent::beforeSave($insert)) {
             $status = $this->getDirtyAttributes(['status']);

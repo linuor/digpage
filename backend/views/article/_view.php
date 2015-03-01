@@ -3,11 +3,14 @@
 /* @var $this yii\web\View */
 /* @var $sections array */
 /* @var $rootId integer */
-/* @var $section common\libs\PlainSection */
+/* @var $level integer */
+/* @var $section common\libs\SectionRel */
 $section = $sections[$rootId];
+$tag = 'h' . $level>6?6:$level;
+$title = "<h$tag>" . $section->title . "</h$tag>";
 ?>
 <div class="section" id="<?= $rootId ?>">
-    <?= $section->title ?>
+    <?= $title ?>
     <?= $section->content ?>
 <?php
 $cur = $section->firstChild;
@@ -15,6 +18,7 @@ while ($cur !== null) {
     echo $this->render('_view', [
         'sections' => $sections,
         'rootId' => $cur,
+        'level' => $level + 1,
     ]);
     $cur = $sections[$cur]->next;
 }

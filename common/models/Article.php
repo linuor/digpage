@@ -3,8 +3,10 @@
 namespace common\models;
 use common\models\Section;
 use common\libs\SectionNode;
+use common\libs\SectionRel;
 use Yii;
 use yii\db\Exception;
+
 /**
  * @property integer $id
  * @property string $content
@@ -21,24 +23,22 @@ class Article extends \yii\base\Model
     public $toc_mode;
     public $status;
     public $comment_mode;
-    public $created_by;
-    public $updated_at;
     
+    private $_created_by;
+    private $_updated_at;
     private $_sectionNode;
-    private $_plainSections;
-    private $_title;
+    private $_sectionARs;
     
     public function __construct($config = array()) {
+        $this->id = null;
         $this->content = '';
         $this->toc_mode = Section::TOC_MODE_NORMAL;
         $this->status = Section::STATUS_DRAFT;
         $this->comment_mode = Section::COMMENT_MODE_NORMAL;
-        $this->created_by = null;
-        $this->updated_at = 0;
+        $this->_created_by = null;
+        $this->_updated_at = null;
         $this->_sectionNode = null;
-        $this->_plainSections = [];
-        $this->id = null;
-        $this->_title = '';
+        $this->_sectionARs = [];
         parent::__construct($config);
     }
     
@@ -72,7 +72,7 @@ class Article extends \yii\base\Model
     
     public function create($validate=true) {
         if ($validate && !$this->validate()) return false;
-        if ($this->_sectionNode === null) {
+        if ($this->_sectionNode == null) {
             $this->_sectionNode = new SectionNode();
             $this->_sectionNode->loadHtml($this->content);
         }
@@ -82,9 +82,9 @@ class Article extends \yii\base\Model
             try {
                 $res = $this->insert();
                 $insertTransaction->commit();
-            } catch (Exception $e) {
+            } catch (Exception $exception) {
                 $insertTransaction->rollBack();
-                throw $e;
+                throw $exception;
             }
             $this->updateInsert($res);
             $saveTransaction->commit();
@@ -156,60 +156,50 @@ class Article extends \yii\base\Model
      * Get all available comment mode in key-value pairs.
      * @return array
      */
-    public static function getAllCommentMode() {
-        return Section::getAllTocMode();
-    }
+//    public static function getAllCommentMode() {
+//        return Section::getAllTocMode();
+//    }
 
     /**
      * Get all available TOC mode in key-value pairs.
      * @return array
      */
-    public static function getAllTocMode() {
-        return Section::getAllCommentMode();
-    }
+//    public static function getAllTocMode() {
+//        return Section::getAllCommentMode();
+//    }
     
     /**
      * Set sections models for current article.
-     * @param Section|array $sections array or instance of Section
+     * @param SectionRel[]|SectionRel $sections Array or instance of SectionRel
      * @return boolean Return true if success, while false on failure.
      */
     public function setSections($sections) {
-        if (is_array($sections)) {
-            foreach ($sections as $section) {
-                $plain = $section->toPlainSection();
-                foreach ($sections as $sec) {
-                    if ($sec->parent == $plain->id && $sec->prev === null) {
-                        $plain->firstChild = $sec->id;
-                        break;
-                    }
-                }
-                $this->_plainSections[$section->id] = $plain;
-                if ($this->id == null && $section->parent == null) {
-                    $this->_title = $section->getTitleText();
-                    $this->id = $section->id;
-                }
-                if ($this->created_by == null) {
-                    $this->created_by = $section->getCreatedBy()->one()->username;
-                }
-                if ($this->updated_at < $section->updated_at) {
-                    $this->updated_at = $section->updated_at;
-                }
-            }
-            return true;
-        } else if ($sections instanceof Section) {
+        if ($sections instanceof Section) {
             $this->id = $sections->id;
-            $this->_plainSections[$sections->id] = $sections;
+            $this->_sectionARs[$sections->id] = $sections;
             return true;
         }
-        return false;
+        foreach ($sections as $section) {
+            foreach ($sections as $sec) {
+                if ($sec->parent == $section->id && $sec->prev === null) {
+                    $section->firstChild = $sec->id;
+                    break;
+                }
+            }
+            $this->_sectionARs[$section->id] = $section;
+            if ($this->id == null && $section->parent == null) {
+                $this->id = $section->id;
+            }
+        }
+        return true;
     }
     
     /**
      * Getter for all plain sections.
-     * @return array An array of PlainSection objects.
+     * @return Section[] An array of Section objects.
      */
     public function getSections() {
-        return $this->_plainSections;
+        return $this->_sectionARs;
     }
     
     /**
@@ -219,10 +209,34 @@ class Article extends \yii\base\Model
      */
     public static function findOne($id) {
         $model = new self();
-        $sections = Section::findAll(['ancestor' => $id]);
+        $sections = SectionRel::findAll(['ancestor' => $id]);
         if (empty($sections)) return null;
         $model->setSections($sections);
         return $model;
+    }
+    
+    public function getCreatedBy() {
+        if ($this->_created_by == null) {
+            $tmp = $this->_sectionARs[$this->id]->getCreatedBy();
+            if ($tmp != null) {
+                $this->_created_by = $tmp->username;
+            } else {
+                $this->_created_by = '';
+            }
+        }
+        return $this->_created_by;
+    }
+    
+    public function getUpdatedAt() {
+        if ($this->_updated_at == null) {
+            $this->_updated_at = 0;
+            foreach ($this->_sectionARs as $section) {
+                if ($section->updated_at > $this->_updated_at) {
+                    $this->_updated_at = $section->updated_at;
+                }
+            }
+        }
+        return $this->_updated_at;
     }
     
     /**
@@ -230,15 +244,15 @@ class Article extends \yii\base\Model
      * @return string
      */
     public function getTitle() {
-        return $this->_title;
+        return $this->_sectionARs[$this->id]->title;
     }
     
     public function attributeLabels()
     {
-        if (empty($this->_plainSections)) {
+        if (empty($this->_sectionARs)) {
             $section = new Section();
             return $section->attributeLabels();
         }
-        return reset($this->_plainSections)->attributeLabels();
+        return reset($this->_sectionARs)->attributeLabels();
     }
 }

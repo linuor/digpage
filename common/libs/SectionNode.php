@@ -177,7 +177,7 @@ class SectionNode extends \yii\base\Object {
             if ($this->_root->hasChildNodes()) {
                 foreach ($this->_root->childNodes as $node) {
                     if ($node->nodeType == XML_ELEMENT_NODE && self::isTitle($node)) {
-                        $this->_title = self::getHtml($node);
+                        $this->_title = $node->nodeValue;
                         break;
                     }
                 }
