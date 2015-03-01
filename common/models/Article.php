@@ -99,6 +99,13 @@ class Article extends \yii\base\Model
     protected function insert() {
         $db = Yii::$app->db;
         $tblName = Section::tableName();
+        $formerLastId = (new Query())
+                ->select(['id'])
+                ->from($tblName)
+                ->where(['parent' => null, 'next' => null])
+                ->andWhere(['not', ['status' => Section::STATUS_DELETE]])
+                ->scalar();
+        Yii::error($formerLastId);
         $time = time();
         $userId = Yii::$app->user->getId();
         $totalRows = 0;
@@ -128,6 +135,7 @@ class Article extends \yii\base\Model
         return [
             'totalRows' => $totalRows,
             'lastId' => $lastId,
+            'formerLastId' => $formerLastId,
         ];
     }
     
@@ -135,6 +143,7 @@ class Article extends \yii\base\Model
         $db = Yii::$app->db;
         $tblName = Section::tableName();
         $beginId = $param['lastId'] - $param['totalRows'] + 1;
+        $lastRow = $param['formerLastId'];
         $stack = [];
         array_push($stack, $this->_sectionNode);
         do {
@@ -150,17 +159,14 @@ class Article extends \yii\base\Model
                 array_push($stack, $sub);
             }
         } while (!empty($stack));
-        $lastRow = (new Query())
-                ->select(['id'])
-                ->from($tblName)
-                ->where(['parent' => null, 'next' => null])
-                ->scalar();
-        $db->createCommand()
-                ->update($tblName, ['prev' => $lastRow], ['id' => $beginId])
-                ->execute();
-        $db->createCommand()
-                ->update($tblName, ['next' => $beginId], ['id' => $lastRow])
-                ->execute();
+        if ($lastRow !== false) {
+            $db->createCommand()
+                    ->update($tblName, ['prev' => $lastRow], ['id' => $beginId])
+                    ->execute();
+            $db->createCommand()
+                    ->update($tblName, ['next' => $beginId], ['id' => $lastRow])
+                    ->execute();
+        }
     }
     
     /**
