@@ -1,5 +1,5 @@
 <?php
-namespace common\libs;
+namespace common\models;
 
 use common\models\Section;
 /**

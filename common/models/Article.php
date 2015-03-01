@@ -3,7 +3,7 @@
 namespace common\models;
 use common\models\Section;
 use common\libs\SectionNode;
-use common\libs\SectionRel;
+use common\models\SectionRel;
 use Yii;
 use yii\db\Exception;
 

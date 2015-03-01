@@ -98,7 +98,7 @@ class ArticleController extends Controller
             'sections' => $model->getSections(),
         ]);
     }
-
+    
     /**
      * Deletes an existing Section model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
