@@ -170,28 +170,12 @@ class Article extends \yii\base\Model
     }
     
     /**
-     * Get all available comment mode in key-value pairs.
-     * @return array
-     */
-//    public static function getAllCommentMode() {
-//        return Section::getAllTocMode();
-//    }
-
-    /**
-     * Get all available TOC mode in key-value pairs.
-     * @return array
-     */
-//    public static function getAllTocMode() {
-//        return Section::getAllCommentMode();
-//    }
-    
-    /**
      * Set sections models for current article.
      * @param SectionRel[]|SectionRel $sections Array or instance of SectionRel
      * @return boolean Return true if success, while false on failure.
      */
     public function setSections($sections) {
-        if ($sections instanceof Section) {
+        if ($sections instanceof SectionRel) {
             $this->id = $sections->id;
             $this->_sectionARs[$sections->id] = $sections;
             return true;
