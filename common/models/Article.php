@@ -137,18 +137,6 @@ class Article extends \yii\base\Model
         $beginId = $param['lastId'] - $param['totalRows'] + 1;
         $stack = [];
         array_push($stack, $this->_sectionNode);
-        $lastRow = (new Query())
-                ->select(['id'])
-                ->from($tblName)
-                ->where(['parent' => null, 'next' => null])
-                ->scalar();
-        $db->createCommand()
-                ->update($tblName, ['prev' => $lastRow], ['id' => $beginId])
-                ->execute();
-        $db->createCommand()
-                ->update($tblName, ['next' => $beginId], ['id' => $lastRow])
-                ->execute();
-        
         do {
             $node = array_pop($stack);
             $db->createCommand()->update($tblName, [
@@ -162,6 +150,17 @@ class Article extends \yii\base\Model
                 array_push($stack, $sub);
             }
         } while (!empty($stack));
+        $lastRow = (new Query())
+                ->select(['id'])
+                ->from($tblName)
+                ->where(['parent' => null, 'next' => null])
+                ->scalar();
+        $db->createCommand()
+                ->update($tblName, ['prev' => $lastRow], ['id' => $beginId])
+                ->execute();
+        $db->createCommand()
+                ->update($tblName, ['next' => $beginId], ['id' => $lastRow])
+                ->execute();
     }
     
     /**
