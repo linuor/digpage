@@ -21,9 +21,12 @@ ArticleFormAsset::register($this);
     <?= $form->field($model, 'toc_mode')->dropDownList(Section::getAllTocMode()) ?>
 
     <?= $form->field($model, 'comment_mode')->dropDownList(Section::getAllCommentMode()) ?>
+    
+    <?= Html::hiddenInput('isPublish', 0, ['id'=>'hdn-ispublish']) ?>
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('backend/section', 'Publish'), ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('backend/section', 'Create'), ['class' => 'btn btn-primary']) ?>
+        <?= Html::button(Yii::t('backend/section', 'Publish'), ['class' => 'btn btn-success', 'id' => 'btn-publish']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

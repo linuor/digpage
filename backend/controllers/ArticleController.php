@@ -69,7 +69,9 @@ class ArticleController extends Controller
         $model = new Article();
         $model->scenario = 'create';
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $model->status = Section::STATUS_PUBLISH;
+            if (Yii::$app->request->post('isPublish',0) == 1) {
+                $model->status = Section::STATUS_PUBLISH;
+            }
             $model->create();
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
