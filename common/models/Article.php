@@ -3,7 +3,7 @@
 namespace common\models;
 use common\models\Section;
 use common\libs\SectionNode;
-use common\models\SectionRel;
+use common\libs\SectionTree;
 use yii\db\Query;
 use Yii;
 use yii\db\Exception;
@@ -19,7 +19,6 @@ use yii\db\Exception;
  */
 class Article extends \yii\base\Model
 {
-    public $id;
     public $content;
     public $toc_mode;
     public $status;
@@ -28,10 +27,9 @@ class Article extends \yii\base\Model
     private $_created_by;
     private $_updated_at;
     private $_sectionNode;
-    private $_sectionARs;
+    private $_sectionTree;
     
-    public function __construct($config = array()) {
-        $this->id = null;
+    public function __construct($config = []) {
         $this->content = '';
         $this->toc_mode = Section::TOC_MODE_NORMAL;
         $this->status = Section::STATUS_DRAFT;
@@ -39,7 +37,7 @@ class Article extends \yii\base\Model
         $this->_created_by = null;
         $this->_updated_at = null;
         $this->_sectionNode = null;
-        $this->_sectionARs = [];
+        $this->_sectionTree = new SectionTree();
         parent::__construct($config);
     }
     
@@ -171,28 +169,10 @@ class Article extends \yii\base\Model
     
     /**
      * Set sections models for current article.
-     * @param SectionRel[]|SectionRel $sections Array or instance of SectionRel
-     * @return boolean Return true if success, while false on failure.
+     * @param Section[]|Section $sections Array or instance of Section
      */
     public function setSections($sections) {
-        if ($sections instanceof SectionRel) {
-            $this->id = $sections->id;
-            $this->_sectionARs[$sections->id] = $sections;
-            return true;
-        }
-        foreach ($sections as $section) {
-            foreach ($sections as $sec) {
-                if ($sec->parent == $section->id && $sec->prev === null) {
-                    $section->firstChild = $sec->id;
-                    break;
-                }
-            }
-            $this->_sectionARs[$section->id] = $section;
-            if ($this->id == null && $section->parent == null) {
-                $this->id = $section->id;
-            }
-        }
-        return true;
+        $this->_sectionTree->setSections($sections);
     }
     
     /**
@@ -200,7 +180,7 @@ class Article extends \yii\base\Model
      * @return Section[] An array of Section objects.
      */
     public function getSections() {
-        return $this->_sectionARs;
+        return $this->_sectionTree;
     }
     
     /**
@@ -210,7 +190,7 @@ class Article extends \yii\base\Model
      */
     public static function findOne($id) {
         $model = new self();
-        $sections = SectionRel::findAll(['ancestor' => $id]);
+        $sections = Section::findAll(['ancestor' => $id]);
         if (empty($sections)) return null;
         $model->setSections($sections);
         return $model;
@@ -218,7 +198,7 @@ class Article extends \yii\base\Model
     
     public function getCreatedBy() {
         if ($this->_created_by == null) {
-            $tmp = $this->_sectionARs[$this->id]->getCreatedBy();
+            $tmp = $this->_sectionTree->getEntrySection()->getCreatedBy();
             if ($tmp != null) {
                 $this->_created_by = $tmp->username;
             } else {
@@ -231,7 +211,7 @@ class Article extends \yii\base\Model
     public function getUpdatedAt() {
         if ($this->_updated_at == null) {
             $this->_updated_at = 0;
-            foreach ($this->_sectionARs as $section) {
+            foreach ($this->_sectionTree as $section) {
                 if ($section->updated_at > $this->_updated_at) {
                     $this->_updated_at = $section->updated_at;
                 }
@@ -240,20 +220,25 @@ class Article extends \yii\base\Model
         return $this->_updated_at;
     }
     
+    public function getId() {
+        return $this->_sectionTree->getEntrySection()->id;
+    }
+
+
     /**
      * Get the title in plain text, also the title of the root section.
      * @return string
      */
     public function getTitle() {
-        return $this->_sectionARs[$this->id]->title;
+        return $this->_sectionTree->getEntrySection()->title;
     }
     
     public function attributeLabels()
     {
-        if (empty($this->_sectionARs)) {
+        if (is_null($this->_sectionTree->getEntrySection())) {
             $section = new Section();
             return $section->attributeLabels();
         }
-        return reset($this->_sectionARs)->attributeLabels();
+        return $this->_sectionTree->getEntrySection()->attributeLabels();
     }
 }

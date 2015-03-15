@@ -22,11 +22,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
-<?=
-$this->render('_view', [
-    'sections' => $sections,
-    'rootId' => $model->id,
-    'level' => 1,
-]);
+<?php
+$tree = new RecursiveIteratorIterator($model->getSections(), RecursiveIteratorIterator::SELF_FIRST);
+foreach ($tree as $item) {
+    var_dump($item);
+}
 ?>
 </div>

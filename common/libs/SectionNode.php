@@ -1,20 +1,23 @@
 <?php
 /**
- * Represent a Section node in the DOM
+ * Represent a Section node in the DOM.
+ * A sectoin node is html element directly contains a header at least.
+ * In most case, it also has some content and some children sections.
  *
  * @author linuor <linuor@gmail.com>
  */
 
 namespace common\libs;
 use DOMDocument;
+use yii\base\Object;
 
-class SectionNode extends \yii\base\Object {
+class SectionNode extends Object {
 
     public $id;
     private $_title;
     private $_content;
     private $_root;
-    private $_child;
+    private $_children;
     private $_parent;
     private $_next;
     private $_prev;
@@ -24,9 +27,12 @@ class SectionNode extends \yii\base\Object {
      * @param \common\helper\DOMNode $node
      * @param array $config config array
      */
-    public function __construct($node = null, $config = []) {
+    public function __construct($config = []) {
         $this->reset();
-        $this->_root = $node;
+        if (isset($config['DomNode'])) {
+            $this->_root = $config['DomNode'];
+            unset($config['DomNode']);
+        }
         parent::__construct($config);
     }
     
@@ -51,10 +57,9 @@ class SectionNode extends \yii\base\Object {
      * @return boolean
      */
     public function hasChild() {
-        // empty array or null.
-        if (empty($this->_child)) return false;
+        if (empty($this->_children)) return false;
         $this->getChild();
-        return empty($this->_child);
+        return empty($this->_children);
     }
 
     /**
@@ -62,18 +67,18 @@ class SectionNode extends \yii\base\Object {
      * @return array SectionNode
      */
     public function getChild() {
-        if ($this->_child === null)
+        if ($this->_children === false)
         {
-            $this->_child = [];
+            $this->_children = [];
             if ($this->_root->hasChildNodes()) {
                 foreach ($this->_root->childNodes as $node) {
                     if ($node->nodeType == XML_ELEMENT_NODE && self::isSectionNode($node)) {
-                        $this->appendChild(new SectionNode($node));
+                        $this->appendChild(new SectionNode(['DomNode' => $node]));
                     }
                 }
             }
         }
-        return $this->_child;
+        return $this->_children;
     }
 
     /**
@@ -81,20 +86,19 @@ class SectionNode extends \yii\base\Object {
      * @param SectionNode $section
      */
     public function appendChild($section) {
-        if ($this->_child === null)
-            $this->_child = [];
+        if ($this->_children === false) $this->_children = [];
         
-        $count = count($this->_child);
+        $count = count($this->_children);
         if ($count>0) {
-            $tmp = $this->_child[$count -1];
+            $tmp = $this->_children[$count -1];
             $tmp->next = $section;
             $section->prev = $tmp;
         } else {
-            $section->prev = false;
+            $section->prev = null;
         }
-        $section->next = false;
+        $section->next = null;
         $section->parent = $this;
-        array_push($this->_child, $section);
+        array_push($this->_children, $section);
     }
     
     /**
@@ -102,24 +106,26 @@ class SectionNode extends \yii\base\Object {
      * @return \common\helper\SectionNode The parent section.
      */
     public function getParent() {
-        if ($this->_parent === null) {
+        if ($this->_parent === false) {
             $node = $this->_root->parentNode;
             while ($node && !self::isSectionNode($node)) {
                 $node = $node->parentNode;
             }
             if ($node === null) {
-                $this->_parent = false;
+                $this->_parent = null;
             } else {
-                $tmp = new SectionNode($node);
-                $tmp->addChild($this);
+                $tmp = new SectionNode(['DomNode' => $node]);
                 $this->_parent = $tmp;
             }
         }
         return $this->_parent;
     }
     
-    public function setParent($section) {
-        $this->_parent = $section;
+    /**
+     * @param SectionNode $sectionNode
+     */
+    public function setParent($sectionNode) {
+        $this->_parent = $sectionNode;
     }
 
     /**
@@ -127,15 +133,15 @@ class SectionNode extends \yii\base\Object {
      * @return \common\helper\SectionNode
      */
     public function getNext() {
-        if ($this->_next === null) {
+        if ($this->_next === false) {
             $node = $this->_root->nextSibling;
             while ($node && !self::isSectionNode($node)) {
                 $node = $node->nextSibling;
             }
             if ($node === null) {
-                $this->_next = false;
+                $this->_next = null;
             } else {
-                $this->_next = new SectionNode($node);
+                $this->_next = new SectionNode(['DomNode' => $node]);
             }
         }
         return $this->_next;
@@ -150,15 +156,15 @@ class SectionNode extends \yii\base\Object {
      * @return \common\helper\SectionNode
      */
     public function getPrev() {
-        if ($this->_prev === null) {
+        if ($this->_prev === false) {
             $node = $this->_root->previousSibling;
             while ($node && !self::isSectionNode($node)) {
                 $node = $node->previousSibling;
             }
             if ($node === null) {
-                $this->_prev = false;
+                $this->_prev = null;
             } else {
-                $this->_prev = new SectionNode($node);
+                $this->_prev = new SectionNode(['DomNode' => $node]);
             }
         }
         return $this->_prev;
@@ -173,16 +179,13 @@ class SectionNode extends \yii\base\Object {
      * @return string
      */
     public function getTitle() {
-        if ($this->_title === null) {
-            if ($this->_root->hasChildNodes()) {
-                foreach ($this->_root->childNodes as $node) {
-                    if ($node->nodeType == XML_ELEMENT_NODE && self::isTitle($node)) {
-                        $this->_title = $node->nodeValue;
-                        break;
-                    }
+        if ($this->_title === false) {
+            if (!$this->_root->hasChildNodes()) return $this->_title = '';
+            foreach ($this->_root->childNodes as $node) {
+                if ($node->nodeType == XML_ELEMENT_NODE && self::isTitle($node)) {
+                    $this->_title = trim($node->nodeValue);
+                    break;
                 }
-            } else {
-                $this->_title = '';
             }
         }
         return $this->_title;
@@ -194,14 +197,12 @@ class SectionNode extends \yii\base\Object {
      * @return string
      */
     public function getContent() {
-        if ($this->_content === null) {
+        if ($this->_content === false) {
             $content = '';
-            if ($this->_root->hasChildNodes()) {
-                foreach ($this->_root->childNodes as $node) {
-                    if (!self::isTitle($node) && !self::isSectionNode($node)) {
-                        $content .= self::getHtml($node);
-                    }
-                }
+            if (!$this->_root->hasChildNodes()) return $this->_content = '';
+            foreach ($this->_root->childNodes as $node) {
+                if (self::isTitle($node) || self::isSectionNode($node)) continue;
+                $content .= self::getHtml($node);
             }
             $this->_content = $content;
         }
@@ -255,13 +256,13 @@ class SectionNode extends \yii\base\Object {
     }
     
     protected function reset() {
-        $this->id = null;
-        $this->_root = null;
-        $this->_parent = null;
-        $this->_child = null;
+        $this->id = false;
+        $this->_root = false;
+        $this->_parent = false;
+        $this->_children = false;
         $this->_next = null;
         $this->_prev = null;
-        $this->_title = null;
-        $this->_content = null;
+        $this->_title = false;
+        $this->_content = false;
     }
 }

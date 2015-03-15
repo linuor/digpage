@@ -5,7 +5,7 @@
 /* @var $rootId integer */
 /* @var $level integer */
 /* @var $section common\libs\SectionRel */
-$section = $sections[$rootId];
+$section = $sections->getSection($rootId);
 $tag = 'h' . ($level>6?6:$level);
 $title = "<$tag>" . $section->title . "</$tag>";
 ?>
