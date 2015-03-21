@@ -12,6 +12,7 @@ class ArticleIndexAsset extends AssetBundle
         'js/article_index.js'
     ];
     public $depends = [
+        'backend\assets\AppAsset',
         'yii\web\JqueryAsset',
     ];
 }

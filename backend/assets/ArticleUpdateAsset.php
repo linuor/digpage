@@ -12,6 +12,7 @@ class ArticleUpdateAsset extends AssetBundle
         'js/article_update.js'
     ];
     public $depends = [
+        'backend\assets\AppAsset',
         'backend\assets\CkeditorAsset',
         'yii\web\JqueryAsset',
     ];

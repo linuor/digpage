@@ -3,17 +3,16 @@ namespace backend\assets;
 
 use yii\web\AssetBundle;
 
-class ArticleFormAsset extends AssetBundle
+class ArticleSortAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [];
     public $js = [
-        'js/article_form.js'
+        'js/article_index.js'
     ];
     public $depends = [
         'backend\assets\AppAsset',
-        'backend\assets\CkeditorAsset',
         'yii\web\JqueryAsset',
     ];
 }
