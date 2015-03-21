@@ -96,10 +96,11 @@ class Article extends \yii\base\Model
      * constraint.
      * @return boolean
      */
-    public function loadArticle($id, $status = false) {
-        $condition = ['ancestor'=>$id];
+    public function loadArticle($id, $status = [Section::STATUS_DRAFT, Section::STATUS_PUBLISH]) {
+        $condition = [];
+        $condition['ancestor'] = $id;
         if ($status !== false) {
-            $condition[] = ['status' => $status];
+            $condition['status'] = $status;
         }
         $this->_sectionTree = Section::find()->where($condition)->indexBy('id')->all();
         if (empty($this->_sectionTree)) return false;
@@ -182,18 +183,6 @@ class Article extends \yii\base\Model
     }
     
     /**
-     * Set sections models for current article.
-     * @param Section[]|Section $sections Array or instance of Section
-     */
-    public function setSections($sections) {
-        if ($sections instanceof Section) {
-            $this->_sectionTree = [$sections];
-        } else if(is_array($sections)) {
-            $this->_sectionTree = $sections;
-        }
-    }
-    
-    /**
      * Getter for all plain sections.
      * @return Section[] An array of Section objects.
      */
@@ -255,5 +244,42 @@ class Article extends \yii\base\Model
     {
         $section = new Section();
         return $section->attributeLabels();
+    }
+    
+    /**
+     * Get the toc of current article
+     * @param array $status
+     * @return array
+     */
+    public function getArticleToc($status = [Section::STATUS_DRAFT, Section::STATUS_PUBLISH]) {
+        $query = new Query();
+        $query->select(['id','title','ver'])
+                ->from(Section::tableName())
+                ->where([
+                    'ancestor' => $this->_id,
+                    'toc_mode' => Section::TOC_MODE_NORMAL,
+                    'status' => $status
+                ])->indexBy('id');
+        $res = [];
+        return $query->all();
+    }
+    
+    public static function getAllTocs($status = [Section::STATUS_DRAFT, Section::STATUS_PUBLISH]) {
+        $query = new Query();
+        $query->select(['id','title','ver'])
+                ->from(Section::tableName())
+                ->where([
+                    'toc_mode' => Section::TOC_MODE_NORMAL,
+                    'status' => $status
+                ])->indexBy('id');
+        return $query->all();
+    }
+    
+    public static function getHeadingArticle() {
+        return Section::find()
+                ->where([
+                    'parent' => 'null',
+                    'prev' => 'null',
+                ])->one();
     }
 }

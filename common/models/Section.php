@@ -260,7 +260,6 @@ class Section extends \yii\db\ActiveRecord
      */
     public function markDeleted() {
         $this->status = self::STATUS_DELETE;
-        $this->ancestor = null;
         $this->save(false);
     }
     
