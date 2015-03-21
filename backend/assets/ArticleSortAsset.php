@@ -9,10 +9,11 @@ class ArticleSortAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [];
     public $js = [
-        'js/article_index.js'
+        'js/article_sort.js'
     ];
     public $depends = [
         'backend\assets\AppAsset',
         'yii\web\JqueryAsset',
+        'yii\jui\JuiAsset',
     ];
 }

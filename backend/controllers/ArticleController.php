@@ -100,6 +100,15 @@ class ArticleController extends Controller
         ]);
     }
     
+    public function actionSort() {
+        $sections = Article::getAllTocs();
+        $headingId = Article::generateFirstChild($sections);
+        return $this->render('sort', [
+            'sections' => $sections,
+            'headingId' => $headingId,
+        ]);
+    }
+    
     /**
      * Deletes an existing Section model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

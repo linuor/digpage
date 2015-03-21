@@ -253,20 +253,19 @@ class Article extends \yii\base\Model
      */
     public function getArticleToc($status = [Section::STATUS_DRAFT, Section::STATUS_PUBLISH]) {
         $query = new Query();
-        $query->select(['id','title','ver'])
+        $query->select(['id', 'title', 'ancestor', 'parent', 'next', 'prev', 'ver'])
                 ->from(Section::tableName())
                 ->where([
                     'ancestor' => $this->_id,
                     'toc_mode' => Section::TOC_MODE_NORMAL,
                     'status' => $status
                 ])->indexBy('id');
-        $res = [];
         return $query->all();
     }
     
     public static function getAllTocs($status = [Section::STATUS_DRAFT, Section::STATUS_PUBLISH]) {
         $query = new Query();
-        $query->select(['id','title','ver'])
+        $query->select(['id', 'title', 'ancestor', 'parent', 'next', 'prev', 'ver'])
                 ->from(Section::tableName())
                 ->where([
                     'toc_mode' => Section::TOC_MODE_NORMAL,
@@ -275,11 +274,25 @@ class Article extends \yii\base\Model
         return $query->all();
     }
     
+    public static function generateFirstChild(&$array) {
+        $headingId = null;
+        foreach ($array as $v) {
+            if ($v['prev'] !== null) 
+                continue;
+            
+            if ($v['parent'] === null || !isset($v['parent']))
+                $headingId = $v['id'];
+            else
+                $array[$v['parent']]['firstChild'] = $v['id'];
+        }
+        return $headingId;
+    }
+
     public static function getHeadingArticle() {
         return Section::find()
                 ->where([
-                    'parent' => 'null',
-                    'prev' => 'null',
+                    'parent' => null,
+                    'prev' => null,
                 ])->one();
     }
 }
