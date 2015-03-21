@@ -4,16 +4,15 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Article */
-/* @var $sections array */
 
-$this->title = $model->title;
+$this->title = $model->getTitle();
 $this->params['breadcrumbs'][] = ['label' => Yii::t('backend/section', 'Sections'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="article-view">
     <p>
-        <?= Html::a(Yii::t('backend/section', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('backend/section', 'Delete'), ['delete', 'id' => $model->id], [
+        <?= Html::a(Yii::t('backend/section', 'Update'), ['update', 'id' => $model->getId()], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a(Yii::t('backend/section', 'Delete'), ['delete', 'id' => $model->getId()], [
             'class' => 'btn btn-danger',
             //TODO modify delete
             'data' => [
@@ -23,9 +22,10 @@ $this->params['breadcrumbs'][] = $this->title;
         ]) ?>
     </p>
 <?php
-$tree = new RecursiveIteratorIterator($model->getSections(), RecursiveIteratorIterator::SELF_FIRST);
-foreach ($tree as $item) {
-    var_dump($item);
-}
+echo $this->render('_view', [
+    'sections' => $model->getSections(),
+    'rootId' => $model->getId(),
+    'level' => 1,
+]);
 ?>
 </div>

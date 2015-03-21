@@ -55,7 +55,6 @@ class ArticleController extends Controller
         $model = $this->findModel($id);
         return $this->render('view', [
             'model' => $model,
-            'sections' => $model->getSections(),
         ]);
     }
 
@@ -123,7 +122,8 @@ class ArticleController extends Controller
      */
     protected function findModel($id)
     {
-        if (!($model = Article::findOne($id)) !== null) {
+        $model = new Article();
+        if ($model->loadArticle($id)) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

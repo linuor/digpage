@@ -3,7 +3,6 @@
 namespace common\models;
 use common\models\Section;
 use common\libs\SectionNode;
-use common\libs\SectionTree;
 use yii\db\Query;
 use Yii;
 use yii\db\Exception;
@@ -24,6 +23,8 @@ class Article extends \yii\base\Model
     public $status;
     public $comment_mode;
     
+    private $_id;
+    private $_title;
     private $_created_by;
     private $_updated_at;
     private $_sectionNode;
@@ -34,10 +35,12 @@ class Article extends \yii\base\Model
         $this->toc_mode = Section::TOC_MODE_NORMAL;
         $this->status = Section::STATUS_DRAFT;
         $this->comment_mode = Section::COMMENT_MODE_NORMAL;
+        $this->_id = null;
+        $this->_title = '';
         $this->_created_by = null;
         $this->_updated_at = null;
         $this->_sectionNode = null;
-        $this->_sectionTree = new SectionTree();
+        $this->_sectionTree = [];
         parent::__construct($config);
     }
     
@@ -77,15 +80,7 @@ class Article extends \yii\base\Model
         }
         $saveTransaction = Yii::$app->db->beginTransaction();
         try {
-            $insertTransaction = Yii::$app->db->beginTransaction();
-            try {
-                $res = $this->insert();
-                $insertTransaction->commit();
-            } catch (Exception $exception) {
-                $insertTransaction->rollBack();
-                throw $exception;
-            }
-            $this->updateInsert($res);
+            $this->insert();
             $saveTransaction->commit();
         } catch (Exception $e) {
             $saveTransaction->rollBack();
@@ -94,16 +89,42 @@ class Article extends \yii\base\Model
         return true;
     }
     
+    /**
+     * Load all sections with the same ancestor.
+     * @param integer $id Article ID, also the ancestor fields.
+     * @param type $status Constraint on the fields of status. False while no 
+     * constraint.
+     * @return boolean
+     */
+    public function loadArticle($id, $status = false) {
+        $condition = ['ancestor'=>$id];
+        if ($status !== false) {
+            $condition[] = ['status' => $status];
+        }
+        $this->_sectionTree = Section::find()->where($condition)->indexBy('id')->all();
+        if (empty($this->_sectionTree)) return false;
+        $this->populate($this->_sectionTree[$id]);
+        return true;
+    }
+    
+    /**
+     * Populate all fields from Section.
+     * @param common\models\Section $sectionModel
+     */
+    protected function populate($sectionModel) {
+        $this->_id = $sectionModel->id;
+        $this->_title = $sectionModel->title;
+    }
+
     protected function insert() {
         $db = Yii::$app->db;
         $tblName = Section::tableName();
-        $formerLastId = (new Query())
+        $lastRow = (new Query())
                 ->select(['id'])
                 ->from($tblName)
                 ->where(['parent' => null, 'next' => null])
                 ->andWhere(['not', ['status' => Section::STATUS_DELETE]])
                 ->scalar();
-        Yii::error($formerLastId);
         $time = time();
         $userId = Yii::$app->user->getId();
         $totalRows = 0;
@@ -128,20 +149,13 @@ class Article extends \yii\base\Model
                 array_push($stack, $sub);
             }
         } while (!empty($stack));
-        $lastId = $db->getLastInsertID();
-        $this->id = $lastId - $totalRows + 1;
-        return [
-            'totalRows' => $totalRows,
-            'lastId' => $lastId,
-            'formerLastId' => $formerLastId,
-        ];
+        
+        $this->updateInsert($db, $tblName, $totalRows, $lastRow);
     }
     
-    protected function updateInsert($param) {
-        $db = Yii::$app->db;
-        $tblName = Section::tableName();
-        $beginId = $param['lastId'] - $param['totalRows'] + 1;
-        $lastRow = $param['formerLastId'];
+    protected function updateInsert($db, $tblName, $totalRows, $lastRow) {
+        $lastId = $db->getLastInsertID();
+        $this->_id = $beginId = $lastId - $totalRows + 1;
         $stack = [];
         array_push($stack, $this->_sectionNode);
         do {
@@ -172,7 +186,11 @@ class Article extends \yii\base\Model
      * @param Section[]|Section $sections Array or instance of Section
      */
     public function setSections($sections) {
-        $this->_sectionTree->setSections($sections);
+        if ($sections instanceof Section) {
+            $this->_sectionTree = [$sections];
+        } else if(is_array($sections)) {
+            $this->_sectionTree = $sections;
+        }
     }
     
     /**
@@ -221,24 +239,21 @@ class Article extends \yii\base\Model
     }
     
     public function getId() {
-        return $this->_sectionTree->getEntrySection()->id;
+        return $this->_id;
     }
-
 
     /**
      * Get the title in plain text, also the title of the root section.
      * @return string
      */
     public function getTitle() {
-        return $this->_sectionTree->getEntrySection()->title;
+        if(!empty($this->_title)) return $this->_title;
+        return $this->_sectionTree->models[$this->_id]->title;
     }
     
     public function attributeLabels()
     {
-        if (is_null($this->_sectionTree->getEntrySection())) {
-            $section = new Section();
-            return $section->attributeLabels();
-        }
-        return $this->_sectionTree->getEntrySection()->attributeLabels();
+        $section = new Section();
+        return $section->attributeLabels();
     }
 }

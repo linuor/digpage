@@ -4,23 +4,26 @@
 /* @var $sections array */
 /* @var $rootId integer */
 /* @var $level integer */
-/* @var $section common\libs\SectionRel */
-$section = $sections->getSection($rootId);
+/* @var $model common\models\Section */
+$model = $sections[$rootId];
 $tag = 'h' . ($level>6?6:$level);
-$title = "<$tag>" . $section->title . "</$tag>";
+$title = "<$tag>" . $model->title . "</$tag>";
 ?>
 <div class="section" id="<?= $rootId ?>">
     <?= $title ?>
-    <?= $section->content ?>
+    <?= $model->content ?>
 <?php
-$cur = $section->firstChild;
-while ($cur !== null) {
-    echo $this->render('_view', [
-        'sections' => $sections,
-        'rootId' => $cur,
-        'level' => $level + 1,
-    ]);
-    $cur = $sections[$cur]->next;
+$curModle = $model->getFirstChildSection()->one();
+if ($curModle !== null) {
+    $cur = $curModle->id;
+    while ($cur !== null) {
+        echo $this->render('_view', [
+            'sections' => $sections,
+            'rootId' => $cur,
+            'level' => $level + 1,
+        ]);
+        $cur = $sections[$cur]->next;
+    }
 }
 ?>
 </div>

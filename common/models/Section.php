@@ -117,7 +117,7 @@ class Section extends \yii\db\ActiveRecord
     
     /**
      * Get all sections belongs to the same ancestor.
-     * @return Section[]
+     * @return yii\db\ActiveQueryInterface
      */
     public function getDescendentSections()
     {
@@ -126,7 +126,7 @@ class Section extends \yii\db\ActiveRecord
     
     /**
      * Get all comments related to the section
-     * @return Comment[]
+     * @return yii\db\ActiveQueryInterface
      */
     public function getComments()
     {
@@ -135,7 +135,7 @@ class Section extends \yii\db\ActiveRecord
 
     /**
      * Get the user who updated the section at last.
-     * @return User
+     * @return yii\db\ActiveQueryInterface
      */
     public function getUpdatedBy()
     {
@@ -144,7 +144,7 @@ class Section extends \yii\db\ActiveRecord
 
     /**
      * Get the author.
-     * @return User
+     * @return yii\db\ActiveQueryInterface
      */
     public function getCreatedBy()
     {
@@ -153,7 +153,7 @@ class Section extends \yii\db\ActiveRecord
 
     /**
      * Get the next section at the same level.
-     * @return Section
+     * @return yii\db\ActiveQueryInterface
      */
     public function getNextSection()
     {
@@ -162,11 +162,31 @@ class Section extends \yii\db\ActiveRecord
     
     /**
      * Get all child sections.
-     * @return Section[]
+     * @return yii\db\ActiveQueryInterface
      */
     public function getChildSections()
     {
         return $this->hasMany(Section::className(), ['parent' => 'id']);
+    }
+    
+    /**
+     * Get the first child section.
+     * @return yii\db\ActiveQueryInterface
+     */
+    public function getFirstChildSection() {
+        $children = $this->getChildSections();
+        $children->andWhere(['prev' => null])->limit(1);
+        return $children;
+    }
+
+    /**
+     * Get the last child section.
+     * @return yii\db\ActiveQueryInterface
+     */
+    public function getLastChildSection() {
+        $children = $this->getChildSections();
+        $children->andWhere(['next' => null])->limit(1);
+        return $children;
     }
 
     /**
