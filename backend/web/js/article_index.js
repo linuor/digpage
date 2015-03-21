@@ -10,7 +10,7 @@
         data[field] = value;
         data['ver'] = ver;
         $.ajax({
-            url: 'http://api.dev.com/sections/' + id,
+            url: window.digpage.apiUrl + 'sections/' + id,
             type: 'PUT',
             data: data,
             success: function(data, text, xhr){
@@ -28,7 +28,7 @@
         id = $parent.data('key');
         ver = $parent.data('sectionver');
         $.ajax({
-            url: 'http://api.dev.com/sections/' + id,
+            url: window.digpage.apiUrl + 'sections/' + id,
             type: 'DELETE',
             data: {
                 ver: ver

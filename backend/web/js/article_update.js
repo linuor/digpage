@@ -31,7 +31,7 @@ CKEDITOR.on('instanceCreated', function (event) {
             $header.remove();
             content = $data.html().trim();
             $.ajax({
-                url: 'http://api.dev.com/sections/' + id,
+                url: window.digpage.apiUrl + 'sections/' + id,
                 type: 'PUT',
                 data: {
                     ver: ver,
@@ -54,7 +54,7 @@ CKEDITOR.on('instanceCreated', function (event) {
         };
         tmp[index] = value;
         $.ajax({
-            url: 'http://api.dev.com/sections/' + id,
+            url: window.digpage.apiUrl + 'sections/' + id,
             type: 'PUT',
             data: tmp,
             success :function (data, text, xhr){
@@ -70,7 +70,7 @@ CKEDITOR.on('instanceCreated', function (event) {
         id = dataset['sectionid'];
         ver = dataset['sectionver'];
         $.ajax({
-            url: 'http://api.dev.com/sections/' + id,
+            url: window.digpage.apiUrl + 'sections/' + id,
             type: 'DELETE',
             data: {
                 ver:ver
