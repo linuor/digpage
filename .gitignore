@@ -36,3 +36,6 @@ GTAGS
 
 # upload dirs
 backend/web/upload/
+
+# components
+components/

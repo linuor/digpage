@@ -1,6 +1,7 @@
 <?php
 
 namespace common\models;
+
 use Yii;
 
 /**
@@ -32,8 +33,8 @@ use Yii;
  * @property-read Section $parentSection The parent section.
  * @property-read Section $prevSection The prev section at the same level.
  */
-class Section extends \yii\db\ActiveRecord
-{
+class Section extends \yii\db\ActiveRecord {
+
     const STATUS_DRAFT = 0;
     const STATUS_PENDING = 20;
     const STATUS_REVIEW = 30;
@@ -52,37 +53,35 @@ class Section extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return '{{%section}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['toc_mode', 'status', 'comment_mode', 'ver', ], 'integer'],
+            [['toc_mode', 'status', 'comment_mode', 'ver',], 'integer'],
             [['toc_mode'], 'in', 'range' => [
-                Section::TOC_MODE_NORMAL,
-                Section::TOC_MODE_HIDDEN,
-            ]],
+                    Section::TOC_MODE_NORMAL,
+                    Section::TOC_MODE_HIDDEN,
+                ]],
             [['status'], 'in', 'range' => [
-                Section::STATUS_DRAFT,
-                Section::STATUS_PUBLISH,
-                Section::STATUS_DELETE,
-            ]],
-            [['comment_mode'], 'in', 'range' =>[
-                Section::COMMENT_MODE_NORMAL,
-                Section::COMMENT_MODE_FORBIDDEN,
-                Section::COMMENT_MODE_HIDDEN,
-            ]],
+                    Section::STATUS_DRAFT,
+                    Section::STATUS_PUBLISH,
+                    Section::STATUS_DELETE,
+                ]],
+            [['comment_mode'], 'in', 'range' => [
+                    Section::COMMENT_MODE_NORMAL,
+                    Section::COMMENT_MODE_FORBIDDEN,
+                    Section::COMMENT_MODE_HIDDEN,
+                ]],
             [['content'], 'string'],
             [['title'], 'string', 'max' => 255]
         ];
     }
-    
+
     /**
      * Make Section support optimistic lock, with the field of ver.
      */
@@ -93,8 +92,7 @@ class Section extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('common/section', 'ID'),
             'title' => Yii::t('common/section', 'Title'),
@@ -114,22 +112,20 @@ class Section extends \yii\db\ActiveRecord
             'updated_by' => Yii::t('common/section', 'Updated By'),
         ];
     }
-    
+
     /**
      * Get all sections belongs to the same ancestor.
      * @return yii\db\ActiveQueryInterface
      */
-    public function getDescendentSections()
-    {
+    public function getDescendentSections() {
         return $this->hasMany(Sections::className(), ['ancestor' => 'id']);
     }
-    
+
     /**
      * Get all comments related to the section
      * @return yii\db\ActiveQueryInterface
      */
-    public function getComments()
-    {
+    public function getComments() {
         return $this->hasMany(Comment::className(), ['section_id' => 'id']);
     }
 
@@ -137,8 +133,7 @@ class Section extends \yii\db\ActiveRecord
      * Get the user who updated the section at last.
      * @return yii\db\ActiveQueryInterface
      */
-    public function getUpdatedBy()
-    {
+    public function getUpdatedBy() {
         return $this->hasOne(User::className(), ['id' => 'updated_by']);
     }
 
@@ -146,8 +141,7 @@ class Section extends \yii\db\ActiveRecord
      * Get the author.
      * @return yii\db\ActiveQueryInterface
      */
-    public function getCreatedBy()
-    {
+    public function getCreatedBy() {
         return $this->hasOne(User::className(), ['id' => 'created_by']);
     }
 
@@ -155,20 +149,18 @@ class Section extends \yii\db\ActiveRecord
      * Get the next section at the same level.
      * @return yii\db\ActiveQueryInterface
      */
-    public function getNextSection()
-    {
+    public function getNextSection() {
         return $this->hasOne(Section::className(), ['id' => 'next']);
     }
-    
+
     /**
      * Get all child sections.
      * @return yii\db\ActiveQueryInterface
      */
-    public function getChildSections()
-    {
+    public function getChildSections() {
         return $this->hasMany(Section::className(), ['parent' => 'id']);
     }
-    
+
     /**
      * Get the first child section.
      * @return yii\db\ActiveQueryInterface
@@ -193,8 +185,7 @@ class Section extends \yii\db\ActiveRecord
      * Get the parent section.
      * @return Section
      */
-    public function getParentSection()
-    {
+    public function getParentSection() {
         return $this->hasOne(Section::className(), ['id' => 'parent']);
     }
 
@@ -202,11 +193,10 @@ class Section extends \yii\db\ActiveRecord
      * Get the prev section at the same level.
      * @return Section
      */
-    public function getPrevSection()
-    {
+    public function getPrevSection() {
         return $this->hasOne(Section::className(), ['id' => 'prev']);
     }
-    
+
     /**
      * Get all available comment mode in key-value pairs.
      * @return array
@@ -229,7 +219,7 @@ class Section extends \yii\db\ActiveRecord
             self::TOC_MODE_HIDDEN => Yii::t('common/section', 'Hidden'),
         ];
     }
-    
+
     /**
      * Get all available status in key-value pairs.
      * @return array
@@ -241,51 +231,44 @@ class Section extends \yii\db\ActiveRecord
             self::STATUS_DELETE => Yii::t('common/section', 'Delete'),
         ];
     }
-    
+
     public function getTocModeText() {
         return static::getAllCommentMode()[$this->toc_mode];
     }
-    
+
     public function getCommentModeText() {
         return static::getAllCommentMode()[$this->comment_mode];
     }
-    
+
     public function getStatusText() {
         return static::getAllStatus()[$this->status];
     }
-    
+
     /**
      * Mark Section on status DELETE.
      * Related section will auto update, cause by the beforeSave() method
      */
     public function markDeleted() {
         $this->status = self::STATUS_DELETE;
-        $this->save(false);
+        return $this->save(false);
     }
-    
+
     /**
      * @inheritDoc
      */
     public function beforeSave($insert) {
-        if (parent::beforeSave($insert)) {
-            $status = $this->getDirtyAttributes(['status']);
-            if (!empty($status) && $status['status'] == self::STATUS_DELETE) {
-                //use raw SQL instead of AR, to prevent the optimisticLock()
-                Yii::$app->db->createCommand()->update(self::tableName(),
-                        ['next' => $this->next],
-                        ['id' => $this->prev]
-                    )->execute();
-                Yii::$app->db->createCommand()->update(self::tableName(),
-                        ['prev' => $this->prev],
-                        ['id' => $this->next]
-                    )->execute();
-            }
-            return true;
-        } else {
+        if (!parent::beforeSave($insert)) {
             return false;
         }
+        $status = $this->getDirtyAttributes(['status']);
+        if (!empty($status) && $status['status'] == self::STATUS_DELETE) {
+            if (!$this->updateRelatedDelete()) {
+                return false;
+            }
+        }
+        return true;
     }
-    
+
     /**
      * Make insert, update and delete operations transactional.
      */
@@ -293,5 +276,51 @@ class Section extends \yii\db\ActiveRecord
         return [
             self::OP_ALL,
         ];
+    }
+
+    public function fields() {
+        $fields = parent::fields();
+        unset($fields['content']);
+        return $fields;
+    }
+
+    public function reorder($data) {
+        $prev = $this->getPrevSection()->one();
+        $next = $this->getNextSection()->one();
+        if ($prev !== null) {
+            $prev->next = $this->next;
+            $prev->save(false);
+        }
+        if ($next !== null) {
+            $next->prev = $this->prev;
+            $next->save(false);
+        }
+        if (isset($data['parent'])) {
+            $this->parent = empty($data['parent']) ? null : $data['parent'];
+        }
+        $this->prev = empty($data['prev']) ? null : $data['prev'];
+        $newPrev = null;
+        if ($this->prev == null) {
+            $newPrev = static::findOne(['parent' => $this->parent, 'prev' => null]);
+            if ($newPrev !== null) {
+                $newPrev->prev = $this->id;
+                $newPrev->save(false);
+                $this->next = $newPrev->id;
+            } else {
+                $this->next = null;
+            }
+        } else {
+            $newPrev = static::find()->with('nextSection')
+                            ->where(['id' => $this->prev])->one();
+            $this->next = $newPrev->next;
+            $newNext = $newPrev->getNextSection()->one();
+            if ($newNext !== null) {
+                $newNext->prev = $this->id;
+                $newNext->save(false);
+            }
+            $newPrev->next = $this->id;
+            $newPrev->save(false);
+        }
+        $this->save(false);
     }
 }

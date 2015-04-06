@@ -12,6 +12,7 @@ class ArticleSortAsset extends AssetBundle
         'js/article_sort.js'
     ];
     public $depends = [
+        'backend\assets\JSTreeAsset',
         'backend\assets\AppAsset',
         'yii\web\JqueryAsset',
         'yii\jui\JuiAsset',

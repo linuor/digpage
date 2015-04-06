@@ -19,7 +19,8 @@
         "yiisoft/yii2-swiftmailer": "*",
         "ckeditor/ckeditor": "dev-master",
         "sunhater/kcfinder": "dev-master",
-        "yiisoft/yii2-jui": "~2.0.0"
+        "yiisoft/yii2-jui": "~2.0.0",
+        "vakata/jstree": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

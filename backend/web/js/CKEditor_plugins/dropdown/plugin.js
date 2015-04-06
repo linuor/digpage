@@ -56,7 +56,7 @@
             },
             onRender: function() {
                 editor.on('selectionChange', function(ev){
-                    var value = editor.element.$.dataset['section'+index];
+                    var value = editor.element.$.dataset[index];
                     this.setValue(value, getLabel(this, index, value));
                 }, this);
             },

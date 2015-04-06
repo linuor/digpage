@@ -23,7 +23,7 @@ ArticleIndexAsset::register($this);
 ]), ['create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a(Yii::t('backend/section', 'Sort {modelClass}', [
             'modelClass' => 'Section',
-        ]),['sort'], ['class' => 'btn btn-primary']) ?>
+        ]),['toc'], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?= GridView::widget([

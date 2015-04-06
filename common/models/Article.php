@@ -190,19 +190,6 @@ class Article extends \yii\base\Model
         return $this->_sectionTree;
     }
     
-    /**
-     * Get an Article model rooted with the given id.
-     * @param integer $id Root Section ID.
-     * @return Article. null while failure.
-     */
-    public static function findOne($id) {
-        $model = new self();
-        $sections = Section::findAll(['ancestor' => $id]);
-        if (empty($sections)) return null;
-        $model->setSections($sections);
-        return $model;
-    }
-    
     public function getCreatedBy() {
         if ($this->_created_by == null) {
             $tmp = $this->_sectionTree->getEntrySection()->getCreatedBy();
@@ -251,7 +238,7 @@ class Article extends \yii\base\Model
      * @param array $status
      * @return array
      */
-    public function getArticleToc($status = [Section::STATUS_DRAFT, Section::STATUS_PUBLISH]) {
+    public function getAncestorToc($status = [Section::STATUS_DRAFT, Section::STATUS_PUBLISH]) {
         $query = new Query();
         $query->select(['id', 'title', 'ancestor', 'parent', 'next', 'prev', 'ver'])
                 ->from(Section::tableName())
@@ -263,11 +250,12 @@ class Article extends \yii\base\Model
         return $query->all();
     }
     
-    public static function getAllTocs($status = [Section::STATUS_DRAFT, Section::STATUS_PUBLISH]) {
+    public static function getArticleToc($id = null, $status = [Section::STATUS_DRAFT, Section::STATUS_PUBLISH]) {
         $query = new Query();
         $query->select(['id', 'title', 'ancestor', 'parent', 'next', 'prev', 'ver'])
                 ->from(Section::tableName())
                 ->where([
+                    'parent' => $id,
                     'toc_mode' => Section::TOC_MODE_NORMAL,
                     'status' => $status
                 ])->indexBy('id');
@@ -277,22 +265,34 @@ class Article extends \yii\base\Model
     public static function generateFirstChild(&$array) {
         $headingId = null;
         foreach ($array as $v) {
-            if ($v['prev'] !== null) 
+            if ($v['prev'] !== null && isset($array[$v['prev']])) 
                 continue;
             
-            if ($v['parent'] === null || !isset($v['parent']))
+            if ($v['parent'] === null || !isset($array[$v['parent']]))
                 $headingId = $v['id'];
             else
                 $array[$v['parent']]['firstChild'] = $v['id'];
         }
         return $headingId;
     }
-
-    public static function getHeadingArticle() {
-        return Section::find()
-                ->where([
-                    'parent' => null,
-                    'prev' => null,
-                ])->one();
+    
+    public static function getOrderedArticleToc($id=null) {
+        $res = static::getArticleToc($id);
+        Yii::error($res);
+        if (empty($res)) {
+            return [];
+        }
+        $heading = static::generateFirstChild($res);
+        $r = [];
+        while($heading !== null) {
+            $r[] = [
+                'id' => $res[$heading]['id'],
+                'parent' => $res[$heading]['parent']===null?'#':$res[$heading]['parent'],
+                'text' => $res[$heading]['title'],
+                'children' => true,
+            ];
+            $heading = $res[$heading]['next'];
+        }
+        return $r;
     }
 }

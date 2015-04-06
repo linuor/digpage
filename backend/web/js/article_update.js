@@ -23,8 +23,8 @@ CKEDITOR.on('instanceCreated', function (event) {
         editor = event.editor;
         if (editor.checkDirty()) {
             dataset = editor.element.$.dataset;
-            id = dataset['sectionid'];
-            ver = dataset['sectionver'];
+            id = dataset['id'];
+            ver = dataset['ver'];
             $data = $('<div>' + editor.getData() + '</div>');
             $header = $data.find('h1,h2,h3,h4,h5,h6');
             header = $.trim($header.text());
@@ -39,16 +39,16 @@ CKEDITOR.on('instanceCreated', function (event) {
                     content: content
                 },
                 success :function (data, text, xhr){
-                    dataset['sectionver'] = parseInt(ver) + 1;
+                    dataset['ver'] = parseInt(ver) + 1;
                 }
             });
         }
     });
     var onDropDownClick = function (editor, index, value) {
-        editor.element.$.dataset['section'+index] = value;
+        editor.element.$.dataset[index] = value;
         dataset = editor.element.$.dataset;
-        id = dataset['sectionid'];
-        ver = dataset['sectionver'];
+        id = dataset['id'];
+        ver = dataset['ver'];
         tmp = {
             ver: ver
         };
@@ -58,7 +58,7 @@ CKEDITOR.on('instanceCreated', function (event) {
             type: 'PUT',
             data: tmp,
             success :function (data, text, xhr){
-                    dataset['sectionver'] = parseInt(ver) + 1;
+                    dataset['ver'] = parseInt(ver) + 1;
                 }
         });
     };
@@ -67,8 +67,8 @@ CKEDITOR.on('instanceCreated', function (event) {
             return;
         }
         dataset = editor.element.$.dataset;
-        id = dataset['sectionid'];
-        ver = dataset['sectionver'];
+        id = dataset['id'];
+        ver = dataset['ver'];
         $.ajax({
             url: window.digpage.apiUrl + 'sections/' + id,
             type: 'DELETE',
@@ -76,8 +76,10 @@ CKEDITOR.on('instanceCreated', function (event) {
                 ver:ver
             },
             success :function (data, text, xhr){
-                    dataset['sectionver'] = parseInt(ver) + 1;
-                    editor.element.$.remove();  
+                    dataset['ver'] = parseInt(ver) + 1;
+                    window.digpage.touchVer(data.next);
+                    window.digpage.touchVer(data.prev);
+                    editor.element.$.remove();
                 }
         });
     };

@@ -12,7 +12,7 @@ return [
                 'common*' => [
                     'class' => 'yii\i18n\PhpMessageSource',
                     'basePath' => '@common/messages',
-                    'fileMap' =>[
+                    'fileMap' => [
                         'common' => 'common.php',
                         'common/section' => 'section.php',
                         'common/comment' => 'comment.php',
@@ -21,7 +21,7 @@ return [
                 'backend*' => [
                     'class' => 'yii\i18n\PhpMessageSource',
                     'basePath' => '@backend/messages',
-                    'fileMap' =>[
+                    'fileMap' => [
                         'backend' => 'backend.php',
                         'backend/section' => 'section.php',
                         'backend/comment' => 'comment.php',
@@ -30,7 +30,7 @@ return [
                 'frontend*' => [
                     'class' => 'yii\i18n\PhpMessageSource',
                     'basePath' => '@frontend/messages',
-                    'fileMap' =>[
+                    'fileMap' => [
                         'frontend' => 'frontend.php',
                         'frontend/section' => 'section.php',
                         'frontend/comment' => 'comment.php',
@@ -39,7 +39,7 @@ return [
                 'api*' => [
                     'class' => 'yii\i18n\PhpMessageSource',
                     'basePath' => '@api/messages',
-                    'fileMap' =>[
+                    'fileMap' => [
                         'api' => 'api.php',
                         'api/section' => 'section.php',
                         'api/comment' => 'comment.php',
@@ -49,6 +49,15 @@ return [
                     'class' => 'yii\i18n\PhpMessageSource',
                     'basePath' => '@app/messages',
                 ],
+            ],
+        ],
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'enableStrictParsing' => false,
+            'showScriptName' => false,
+            'rules' => [
+                '<controller:\w+>s' => '<controller>/index',
+                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
             ],
         ],
     ],
